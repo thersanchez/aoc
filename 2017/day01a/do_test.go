@@ -44,6 +44,7 @@ func TestDo(t *testing.T) {
 		{input: "211a", want: 1},
 		{input: "911422279", want: 1 + 2 + 2 + 9},
 		{input: "91asds14bb2ccsd2as27aa9fdwwtyg", want: 1 + 2 + 2 + 9},
+		{input: "┴4", want: 0}, // `┴` is U+2534 and `4` is U+34.
 	} {
 		t.Run(tt.input, func(t *testing.T) {
 			got := do(tt.input)
