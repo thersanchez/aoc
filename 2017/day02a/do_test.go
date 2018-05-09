@@ -20,11 +20,6 @@ func TestDoOK(t *testing.T) {
 		{input: "1 2 3 4\n12 12 12\n10 9 8 7 1 45 6 8", want: 47},
 		{input: "12\t34", want: 22},
 		{input: "1 2\t3 4", want: 3},
-		{input: "1 3\n", want: 2},
-		{input: "1 3\n\n", want: 2},
-		{input: "\n1 3", want: 2},
-		{input: "\n\n1 3", want: 2},
-		{input: "1\n\n3", want: 0},
 	} {
 		t.Run(fmt.Sprintf("%q", tt.input), func(t *testing.T) {
 			got, err := do(tt.input)
@@ -46,6 +41,11 @@ func TestDoError(t *testing.T) {
 		"a",
 		"1 2 a",
 		"1 2\n3 4\nerror\n5 6",
+		"1 3\n",
+		"1 3\n\n",
+		"\n1 3",
+		"\n\n1 3",
+		"1\n\n3",
 	} {
 		t.Run(fmt.Sprintf("%q", tt), func(t *testing.T) {
 			got, err := do(tt)

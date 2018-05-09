@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 func do(input string) (int, error) {
 	ss, err := parse(input)
@@ -14,20 +18,52 @@ func do(input string) (int, error) {
 	return sum, nil
 }
 
-// returns a error if s has:
+// returns an error if s has:
 // - non-integers
-// - negative integers
 // - empty lines
+// - lines without data
+// - no lines at all
 func parse(s string) ([][]int, error) {
-	return [][]int{{}}, nil
+	lines := strings.Split(s, "\n")
+	if len(lines) == 0 {
+		return nil, fmt.Errorf("no data")
+	}
+	ret := make([][]int, len(lines))
+	for ln, l := range lines {
+		ww := strings.Fields(l)
+		if len(ww) == 0 {
+			return nil, fmt.Errorf("line %d: no data", ln+1)
+		}
+		ret[ln] = make([]int, len(ww))
+		var err error
+		for wn, w := range ww {
+			ret[ln][wn], err = strconv.Atoi(w)
+			if err != nil {
+				return nil, fmt.Errorf("line %d, word %d: %v", ln+1, wn+1, err)
+			}
+		}
+	}
+	return ret, nil
 }
 
-// Assumes len(s)>0
-func min(s []int) int {
-	return 0
+// Assumes len(nn)>0
+func min(nn []int) int {
+	r := nn[0]
+	for _, n := range nn[1:] {
+		if n < r {
+			r = n
+		}
+	}
+	return r
 }
 
-// Assumes len(s)>0
-func max(s []int) int {
-	return 0
+// Assumes len(nn)>0
+func max(nn []int) int {
+	r := nn[0]
+	for _, n := range nn[1:] {
+		if n > r {
+			r = n
+		}
+	}
+	return r
 }
