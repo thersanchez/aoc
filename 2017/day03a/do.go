@@ -1,14 +1,15 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"math"
 )
 
 // Do solves aoc 2017 day03a.
 func Do(input int) (int, error) {
-	return 0, errors.New("not implemented")
+	var distToCenter int
+	var side int
+	return distToCenter + side/2, nil
 }
 
 // minArraySideContaining returns the side of the minimum array
