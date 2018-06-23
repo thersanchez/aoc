@@ -21,7 +21,7 @@ func minArraySideContaining(x int) (int, error) {
 	ceil := math.Ceil(root)
 	asInt := int(math.Round(ceil))
 	if asInt%2 == 0 {
-		asInt += 1
+		asInt++
 	}
 	return asInt, nil
 }
