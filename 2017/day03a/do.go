@@ -7,9 +7,20 @@ import (
 
 // Do solves aoc 2017 day03a.
 func Do(input int) (int, error) {
-	var distToCenter int
-	var side int
-	return distToCenter + side/2, nil
+	if input == 1 {
+		return 0, nil
+	}
+	side, err := minArraySideContaining(input)
+	if err != nil {
+		return 0, err
+	}
+	centers, err := sidesCenters(side)
+	if err != nil {
+		return 0, err
+	}
+	distToCenter := minDistance(input, centers)
+
+	return manhattanDistance(distToCenter, side), nil
 }
 
 // minArraySideContaining returns the side of the minimum array
@@ -76,4 +87,8 @@ func abs(x int) int {
 		return -x
 	}
 	return x
+}
+
+func manhattanDistance(distToCenter, side int) int {
+	return distToCenter + side/2
 }
