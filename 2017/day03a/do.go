@@ -53,3 +53,26 @@ func sidesCenters(n int) ([4]int, error) {
 
 	return centers, nil
 }
+
+// minDistance calculates the shortest distance between a given number and 4 other numbers.
+func minDistance(x int, others [4]int) int {
+	dists := [4]int{}
+	for i, o := range others {
+		dists[i] = abs(x - o)
+	}
+	minDist := dists[0]
+	for _, d := range dists[1:] {
+		if d < minDist {
+			minDist = d
+		}
+	}
+	return minDist
+}
+
+// abs calculates the absolute value of an integer.
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
