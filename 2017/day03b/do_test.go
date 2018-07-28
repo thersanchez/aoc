@@ -67,3 +67,142 @@ func TestDoOK(t *testing.T) {
 		})
 	}
 }
+
+var posCoordTable = []struct {
+	pos   day03b.Pos
+	coord day03b.Coord
+}{
+	{pos: 0, coord: day03b.Coord{X: 0, Y: 0}},
+	{pos: 1, coord: day03b.Coord{X: 1, Y: 0}},
+	{pos: 2, coord: day03b.Coord{X: 1, Y: 1}},
+	{pos: 3, coord: day03b.Coord{X: 0, Y: 1}},
+	{pos: 4, coord: day03b.Coord{X: -1, Y: 1}},
+	{pos: 5, coord: day03b.Coord{X: -1, Y: 0}},
+	{pos: 6, coord: day03b.Coord{X: -1, Y: -1}},
+	{pos: 7, coord: day03b.Coord{X: 0, Y: -1}},
+	{pos: 8, coord: day03b.Coord{X: 1, Y: -1}},
+	{pos: 9, coord: day03b.Coord{X: 2, Y: -1}},
+	{pos: 10, coord: day03b.Coord{X: 2, Y: 0}},
+	{pos: 11, coord: day03b.Coord{X: 2, Y: 1}},
+	{pos: 12, coord: day03b.Coord{X: 2, Y: 2}},
+	{pos: 13, coord: day03b.Coord{X: 1, Y: 2}},
+	{pos: 14, coord: day03b.Coord{X: 0, Y: 2}},
+	{pos: 15, coord: day03b.Coord{X: -1, Y: 2}},
+	{pos: 16, coord: day03b.Coord{X: -2, Y: 2}},
+	{pos: 17, coord: day03b.Coord{X: -2, Y: 1}},
+	{pos: 18, coord: day03b.Coord{X: -2, Y: 0}},
+	{pos: 19, coord: day03b.Coord{X: -2, Y: -1}},
+	{pos: 20, coord: day03b.Coord{X: -2, Y: -2}},
+	{pos: 21, coord: day03b.Coord{X: -1, Y: -2}},
+	{pos: 22, coord: day03b.Coord{X: 0, Y: -2}},
+	{pos: 23, coord: day03b.Coord{X: 1, Y: -2}},
+	{pos: 24, coord: day03b.Coord{X: 2, Y: -2}},
+	{pos: 25, coord: day03b.Coord{X: 3, Y: -2}},
+	{pos: 26, coord: day03b.Coord{X: 3, Y: -1}},
+	{pos: 27, coord: day03b.Coord{X: 3, Y: 0}},
+	{pos: 28, coord: day03b.Coord{X: 3, Y: 1}},
+	{pos: 29, coord: day03b.Coord{X: 3, Y: 2}},
+	{pos: 30, coord: day03b.Coord{X: 3, Y: 3}},
+	{pos: 31, coord: day03b.Coord{X: 2, Y: 3}},
+	{pos: 32, coord: day03b.Coord{X: 1, Y: 3}},
+	{pos: 33, coord: day03b.Coord{X: 0, Y: 3}},
+	{pos: 34, coord: day03b.Coord{X: -1, Y: 3}},
+	{pos: 35, coord: day03b.Coord{X: -2, Y: 3}},
+	{pos: 36, coord: day03b.Coord{X: -3, Y: 3}},
+	{pos: 37, coord: day03b.Coord{X: -3, Y: 2}},
+	{pos: 38, coord: day03b.Coord{X: -3, Y: 1}},
+	{pos: 39, coord: day03b.Coord{X: -3, Y: 0}},
+	{pos: 40, coord: day03b.Coord{X: -3, Y: -1}},
+	{pos: 41, coord: day03b.Coord{X: -3, Y: -2}},
+	{pos: 42, coord: day03b.Coord{X: -3, Y: -3}},
+	{pos: 43, coord: day03b.Coord{X: -2, Y: -3}},
+	{pos: 44, coord: day03b.Coord{X: -1, Y: -3}},
+	{pos: 45, coord: day03b.Coord{X: 0, Y: -3}},
+	{pos: 46, coord: day03b.Coord{X: 1, Y: -3}},
+	{pos: 47, coord: day03b.Coord{X: 2, Y: -3}},
+	{pos: 48, coord: day03b.Coord{X: 3, Y: -3}},
+	{pos: 49, coord: day03b.Coord{X: 4, Y: -3}},
+}
+
+func TestPosString(t *testing.T) {
+	got := day03b.Pos(42).String()
+	want := "42"
+	if got != want {
+		t.Errorf("want=%s, got=%s", want, got)
+	}
+}
+func TestCoordString(t *testing.T) {
+	got := day03b.Coord{X: 42, Y: -3}.String()
+	want := "(42, -3)"
+	if got != want {
+		t.Errorf("want=%s, got=%s", want, got)
+	}
+}
+func TestPosToCoord(t *testing.T) {
+	for _, tt := range posCoordTable {
+		description := fmt.Sprintf("%v", tt.pos)
+		t.Run(description, func(t *testing.T) {
+			got := day03b.PosToCoord(tt.pos)
+			if tt.coord != got {
+				t.Errorf("want=%d, got=%d", tt.coord, got)
+			}
+		})
+	}
+}
+
+func TestCoordToPos(t *testing.T) {
+	for _, tt := range posCoordTable {
+		description := fmt.Sprintf("%v", tt.coord)
+		t.Run(description, func(t *testing.T) {
+			got := day03b.CoordToPos(tt.coord)
+			if tt.pos != got {
+				t.Errorf("want=%d, got=%d", tt.pos, got)
+			}
+		})
+	}
+}
+
+func TestRingSide(t *testing.T) {
+	for _, tt := range []struct {
+		input day03b.Pos
+		want  int
+	}{
+		{input: 0, want: 1},
+		{input: 1, want: 3},
+		{input: 2, want: 3},
+		{input: 3, want: 3},
+		{input: 4, want: 3},
+		{input: 5, want: 3},
+		{input: 6, want: 3},
+		{input: 7, want: 3},
+		{input: 8, want: 3},
+		{input: 9, want: 5},
+		{input: 10, want: 5},
+		{input: 11, want: 5},
+		{input: 12, want: 5},
+		{input: 13, want: 5},
+		{input: 14, want: 5},
+		{input: 15, want: 5},
+		{input: 16, want: 5},
+		{input: 17, want: 5},
+		{input: 18, want: 5},
+		{input: 19, want: 5},
+		{input: 20, want: 5},
+		{input: 21, want: 5},
+		{input: 22, want: 5},
+		{input: 23, want: 5},
+		{input: 24, want: 5},
+		{input: 25, want: 7},
+		{input: 48, want: 7},
+		{input: 49, want: 9},
+		{input: 50, want: 9},
+	} {
+		description := fmt.Sprintf("%v", tt.input)
+		t.Run(description, func(t *testing.T) {
+			got := day03b.RingSide(tt.input)
+			if tt.want != got {
+				t.Errorf("want=%d, got=%d", tt.want, got)
+			}
+		})
+	}
+}
