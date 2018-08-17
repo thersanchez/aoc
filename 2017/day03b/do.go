@@ -30,7 +30,19 @@ func (c Coord) String() string {
 
 // PosToCoord returns the spiral coordinate of a memory position.
 func PosToCoord(p Pos) Coord {
-	return Coord{0, 0}
+	if p == 0 {
+		return Coord{X: 0, Y: 0}
+	}
+	side := RingSide(p)
+	bottonRight := Pos((side * side) - 1)
+	if bottonRight == p {
+		return Coord{
+			X: (side - 1) / 2,
+			Y: (side - 1) / -2,
+		}
+	}
+	panic("TODO: repeat for the rest of the corners")
+	return Coord{X: -42, Y: 42}
 }
 
 // RingSide returns the side of the ring containing the given position.

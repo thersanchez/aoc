@@ -140,8 +140,10 @@ func TestCoordString(t *testing.T) {
 }
 func TestPosToCoord(t *testing.T) {
 	for _, tt := range posCoordTable {
+		tt := tt
 		description := fmt.Sprintf("%v", tt.pos)
 		t.Run(description, func(t *testing.T) {
+			t.Parallel()
 			got := day03b.PosToCoord(tt.pos)
 			if tt.coord != got {
 				t.Errorf("want=%d, got=%d", tt.coord, got)
