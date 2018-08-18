@@ -58,9 +58,12 @@ func TestDoOK(t *testing.T) {
 		{input: 37408, want: 39835},
 		{input: 368078, want: 369601},
 	} {
-		description := fmt.Sprintf("%d", tt.input)
+		description := fmt.Sprint(tt.input)
 		t.Run(description, func(t *testing.T) {
-			got := day03b.Do(tt.input)
+			got, err := day03b.Do(tt.input)
+			if err != nil {
+				t.Errorf("unexpected error (%v)", err)
+			}
 			if tt.want != got {
 				t.Errorf("want=%d, got=%d", tt.want, got)
 			}
@@ -68,8 +71,18 @@ func TestDoOK(t *testing.T) {
 	}
 }
 
+func TestDoError(t *testing.T) {
+	for _, pos := range []int{
+		-1, -2, -1000,
+	} {
+		if _, err := day03b.Do(pos); err == nil {
+			t.Errorf("unexpected success (pos=%d)", pos)
+		}
+	}
+}
+
 var posCoordTable = []struct {
-	pos   day03b.Pos
+	pos   int
 	coord day03b.Coord
 }{
 	{pos: 0, coord: day03b.Coord{X: 0, Y: 0}},
@@ -124,13 +137,6 @@ var posCoordTable = []struct {
 	{pos: 49, coord: day03b.Coord{X: 4, Y: -3}},
 }
 
-func TestPosString(t *testing.T) {
-	got := day03b.Pos(42).String()
-	want := "42"
-	if got != want {
-		t.Errorf("want=%s, got=%s", want, got)
-	}
-}
 func TestCoordString(t *testing.T) {
 	got := day03b.Coord{X: 42, Y: -3}.String()
 	want := "(42, -3)"
@@ -138,13 +144,16 @@ func TestCoordString(t *testing.T) {
 		t.Errorf("want=%s, got=%s", want, got)
 	}
 }
-func TestPosToCoord(t *testing.T) {
+func TestPosToCoordOK(t *testing.T) {
 	for _, tt := range posCoordTable {
 		tt := tt
-		description := fmt.Sprintf("%v", tt.pos)
+		description := fmt.Sprint(tt.pos)
 		t.Run(description, func(t *testing.T) {
 			t.Parallel()
-			got := day03b.PosToCoord(tt.pos)
+			got, err := day03b.PosToCoord(tt.pos)
+			if err != nil {
+				t.Errorf("unexpected error (%v)", err)
+			}
 			if tt.coord != got {
 				t.Errorf("want=%d, got=%d", tt.coord, got)
 			}
@@ -152,9 +161,19 @@ func TestPosToCoord(t *testing.T) {
 	}
 }
 
+func TestPosToCoordError(t *testing.T) {
+	for _, pos := range []int{
+		-1, -2, -1000,
+	} {
+		if _, err := day03b.PosToCoord(pos); err == nil {
+			t.Errorf("unexpected success (pos=%d)", pos)
+		}
+	}
+}
+
 func TestCoordToPos(t *testing.T) {
 	for _, tt := range posCoordTable {
-		description := fmt.Sprintf("%v", tt.coord)
+		description := fmt.Sprint(tt.coord)
 		t.Run(description, func(t *testing.T) {
 			got := day03b.CoordToPos(tt.coord)
 			if tt.pos != got {
@@ -164,9 +183,9 @@ func TestCoordToPos(t *testing.T) {
 	}
 }
 
-func TestRingSide(t *testing.T) {
+func TestRingSideOK(t *testing.T) {
 	for _, tt := range []struct {
-		input day03b.Pos
+		input int
 		want  int
 	}{
 		{input: 0, want: 1},
@@ -199,12 +218,25 @@ func TestRingSide(t *testing.T) {
 		{input: 49, want: 9},
 		{input: 50, want: 9},
 	} {
-		description := fmt.Sprintf("%v", tt.input)
+		description := fmt.Sprint(tt.input)
 		t.Run(description, func(t *testing.T) {
-			got := day03b.RingSide(tt.input)
+			got, err := day03b.RingSide(tt.input)
+			if err != nil {
+				t.Errorf("unexpected error (%v)", err)
+			}
 			if tt.want != got {
 				t.Errorf("want=%d, got=%d", tt.want, got)
 			}
 		})
+	}
+}
+
+func TestRingSideError(t *testing.T) {
+	for _, pos := range []int{
+		-1, -2, -1000,
+	} {
+		if _, err := day03b.RingSide(pos); err == nil {
+			t.Errorf("unexpected success (pos=%d)", pos)
+		}
 	}
 }
