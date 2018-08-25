@@ -8,6 +8,7 @@ import (
 )
 
 func TestDoOK(t *testing.T) {
+	t.Parallel()
 	for _, tt := range []struct {
 		input int
 		want  int
@@ -58,8 +59,10 @@ func TestDoOK(t *testing.T) {
 		{input: 37408, want: 39835},
 		{input: 368078, want: 369601},
 	} {
+		tt := tt
 		description := fmt.Sprint(tt.input)
 		t.Run(description, func(t *testing.T) {
+			t.Parallel()
 			got, err := day03b.Do(tt.input)
 			if err != nil {
 				t.Errorf("unexpected error (%v)", err)
@@ -72,12 +75,18 @@ func TestDoOK(t *testing.T) {
 }
 
 func TestDoError(t *testing.T) {
+	t.Parallel()
 	for _, pos := range []int{
 		-1, -2, -1000,
 	} {
-		if _, err := day03b.Do(pos); err == nil {
-			t.Errorf("unexpected success (pos=%d)", pos)
-		}
+		pos := pos
+		description := fmt.Sprint(pos)
+		t.Run(description, func(t *testing.T) {
+			t.Parallel()
+			if _, err := day03b.Do(pos); err == nil {
+				t.Errorf("unexpected success (pos=%d)", pos)
+			}
+		})
 	}
 }
 
@@ -138,13 +147,16 @@ var posCoordTable = []struct {
 }
 
 func TestCoordString(t *testing.T) {
+	t.Parallel()
 	got := day03b.Coord{X: 42, Y: -3}.String()
 	want := "(42, -3)"
 	if got != want {
 		t.Errorf("want=%s, got=%s", want, got)
 	}
 }
+
 func TestPosToCoordOK(t *testing.T) {
+	t.Parallel()
 	for _, tt := range posCoordTable {
 		tt := tt
 		description := fmt.Sprint(tt.pos)
@@ -162,19 +174,27 @@ func TestPosToCoordOK(t *testing.T) {
 }
 
 func TestPosToCoordError(t *testing.T) {
+	t.Parallel()
 	for _, pos := range []int{
 		-1, -2, -1000,
 	} {
-		if _, err := day03b.PosToCoord(pos); err == nil {
-			t.Errorf("unexpected success (pos=%d)", pos)
-		}
+		pos := pos
+		t.Run(fmt.Sprint(pos), func(t *testing.T) {
+			t.Parallel()
+			if _, err := day03b.PosToCoord(pos); err == nil {
+				t.Errorf("unexpected success (pos=%d)", pos)
+			}
+		})
 	}
 }
 
 func TestCoordToPos(t *testing.T) {
+	t.Parallel()
 	for _, tt := range posCoordTable {
+		tt := tt
 		description := fmt.Sprint(tt.coord)
 		t.Run(description, func(t *testing.T) {
+			t.Parallel()
 			got := day03b.CoordToPos(tt.coord)
 			if tt.pos != got {
 				t.Errorf("want=%d, got=%d", tt.pos, got)
@@ -184,6 +204,7 @@ func TestCoordToPos(t *testing.T) {
 }
 
 func TestRingSideOK(t *testing.T) {
+	t.Parallel()
 	for _, tt := range []struct {
 		input int
 		want  int
@@ -218,8 +239,10 @@ func TestRingSideOK(t *testing.T) {
 		{input: 49, want: 9},
 		{input: 50, want: 9},
 	} {
+		tt := tt
 		description := fmt.Sprint(tt.input)
 		t.Run(description, func(t *testing.T) {
+			t.Parallel()
 			got, err := day03b.RingSide(tt.input)
 			if err != nil {
 				t.Errorf("unexpected error (%v)", err)
@@ -232,11 +255,116 @@ func TestRingSideOK(t *testing.T) {
 }
 
 func TestRingSideError(t *testing.T) {
+	t.Parallel()
 	for _, pos := range []int{
 		-1, -2, -1000,
 	} {
-		if _, err := day03b.RingSide(pos); err == nil {
-			t.Errorf("unexpected success (pos=%d)", pos)
-		}
+		pos := pos
+		t.Run(fmt.Sprint(pos), func(t *testing.T) {
+			t.Parallel()
+			if _, err := day03b.RingSide(pos); err == nil {
+				t.Errorf("unexpected success (pos=%d)", pos)
+			}
+		})
 	}
+}
+
+func TestPosToZoneOK(t *testing.T) {
+	t.Parallel()
+	for _, tt := range []struct {
+		input int
+		want  day03b.Zone
+	}{
+		// 0 returns and indeterminate value
+		{input: 1, want: day03b.Right},
+		// 2 returns and indeterminate value
+		{input: 3, want: day03b.Top},
+		// 4 returns and indeterminate value
+		{input: 5, want: day03b.Left},
+		// 6 returns and indeterminate value
+		{input: 7, want: day03b.Bottom},
+		// 8 returns and indeterminate value
+		{input: 9, want: day03b.Right},
+		{input: 10, want: day03b.Right},
+		{input: 11, want: day03b.Right},
+		// 12 returns and indeterminate value
+		{input: 13, want: day03b.Top},
+		{input: 14, want: day03b.Top},
+		{input: 15, want: day03b.Top},
+		// 16 returns and indeterminate value
+		{input: 17, want: day03b.Left},
+		{input: 18, want: day03b.Left},
+		{input: 19, want: day03b.Left},
+		// 20 returns and indeterminate value
+		{input: 21, want: day03b.Bottom},
+		{input: 22, want: day03b.Bottom},
+		{input: 23, want: day03b.Bottom},
+		// 24 returns and indeterminate value
+		{input: 25, want: day03b.Right},
+		{input: 49, want: day03b.Right},
+		{input: 50, want: day03b.Right},
+	} {
+		tt := tt
+		description := fmt.Sprint(tt.input)
+		t.Run(description, func(t *testing.T) {
+			t.Parallel()
+			got, err := day03b.PosToZone(tt.input)
+			if err != nil {
+				t.Errorf("unexpected error (%v)", err)
+			}
+			if tt.want != got {
+				t.Errorf("want=%v, got=%v", tt.want, got)
+			}
+		})
+	}
+}
+
+func TestPosToZoneError(t *testing.T) {
+	t.Parallel()
+	for _, input := range []int{
+		-1, -10, -100,
+	} {
+		input := input
+		description := fmt.Sprint(input)
+		t.Run(description, func(t *testing.T) {
+			t.Parallel()
+			_, err := day03b.PosToZone(input)
+			if err == nil {
+				t.Error("unexpected success")
+			}
+		})
+	}
+}
+
+func TestZoneString(t *testing.T) {
+	t.Parallel()
+	for _, tt := range []struct {
+		zone day03b.Zone
+		want string
+	}{
+		{day03b.Top, "Top"},
+		{day03b.Bottom, "Bottom"},
+		{day03b.Left, "Left"},
+		{day03b.Right, "Right"},
+	} {
+		tt := tt
+		t.Run(tt.want, func(t *testing.T) {
+			t.Parallel()
+			got := tt.zone.String()
+			if got != tt.want {
+				t.Errorf("want=%s, got=%s", tt.want, got)
+			}
+		})
+	}
+}
+
+func TestZoneStringPanic(t *testing.T) {
+	t.Parallel()
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatal("no panic detected")
+		}
+	}()
+	zone := day03b.Zone(-12)
+	_ = zone.String()
 }

@@ -31,35 +31,40 @@ func PosToCoord(p int) (Coord, error) {
 		return Coord{}, fmt.Errorf(
 			"calculating ring side: negative position (%d)", p)
 	}
-	bottomRight := (side * side) - 1
-	if bottomRight == p {
+	corners := corners(side)
+	if p == corners[0] {
 		return Coord{
 			X: (side - 1) / 2,
-			Y: (side - 1) / -2,
+			Y: (side - 1) / 2,
 		}, nil
 	}
-	bottomLeft := bottomRight - (side - 1)
-	if bottomLeft == p {
-		return Coord{
-			X: (side - 1) / -2,
-			Y: (side - 1) / -2,
-		}, nil
-	}
-	topLeft := bottomLeft - (side - 1)
-	if topLeft == p {
+	if p == corners[1] {
 		return Coord{
 			X: (side - 1) / -2,
 			Y: (side - 1) / 2,
 		}, nil
 	}
-	topRight := topLeft - (side - 1)
-	if topRight == p {
+	if p == corners[2] {
+		return Coord{
+			X: (side - 1) / -2,
+			Y: (side - 1) / -2,
+		}, nil
+	}
+	if p == corners[3] {
 		return Coord{
 			X: (side - 1) / 2,
-			Y: (side - 1) / 2,
+			Y: (side - 1) / -2,
 		}, nil
 	}
 	return Coord{}, fmt.Errorf("TODO: not implemented yet")
+}
+
+func corners(side int) []int {
+	br := (side * side) - 1
+	bl := br - (side - 1)
+	tl := bl - (side - 1)
+	tr := tl - (side - 1)
+	return []int{tr, tl, bl, br}
 }
 
 // RingSide returns the side of the ring containing the given position.
@@ -69,7 +74,7 @@ func RingSide(p int) (int, error) {
 		return 0, fmt.Errorf("negative position (%d)", p)
 	}
 	if p == 0 {
-		return 0, nil
+		return 1, nil
 	}
 	sqrt := int(math.Sqrt(float64(p)))
 	if sqrt%2 == 0 {
@@ -81,4 +86,59 @@ func RingSide(p int) (int, error) {
 // CoordToPos returns the memory position of an spiral coordinate.
 func CoordToPos(c Coord) int {
 	return 42
+}
+
+// Zone defines the four regions of a ring.
+type Zone int
+
+const (
+	// Top is the top row.
+	Top Zone = iota
+	// Bottom is the bottom row.
+	Bottom
+	// Left is the left column.
+	Left
+	// Right is the right column.
+	Right
+)
+
+// String pretty prints a Zone.
+func (z Zone) String() string {
+	switch z {
+	case Top:
+		return "Top"
+	case Bottom:
+		return "Bottom"
+	case Left:
+		return "Left"
+	case Right:
+		return "Right"
+	default:
+		panic(fmt.Sprintf("unknown zone (%d)", int(z)))
+	}
+}
+
+// PosToZone returns the ring's zone for a given position (p).
+// Returns an error if p is negative.
+// Returns an indetermined value if p is located in more than one zone, for
+// instance when p=0 or when p is located in a corner of the ring.
+func PosToZone(p int) (Zone, error) {
+	side, err := RingSide(p)
+	if err != nil {
+		return Top, fmt.Errorf(
+			"calculating ring side: negative position (%d)", p)
+	}
+	corners := corners(side)
+	switch {
+	case p <= corners[0]:
+		return Right, nil
+	case p <= corners[1]:
+		return Top, nil
+	case p <= corners[2]:
+		return Left, nil
+	case p <= corners[3]:
+		return Bottom, nil
+	default:
+		panic("internal error")
+	}
 }
