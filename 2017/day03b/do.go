@@ -31,32 +31,38 @@ func PosToCoord(p int) (Coord, error) {
 		return Coord{}, fmt.Errorf(
 			"calculating ring side: negative position (%d)", p)
 	}
+	halfSide := (side - 1) / 2
 	corners := corners(side)
-	if p == corners[0] {
-		return Coord{
-			X: (side - 1) / 2,
-			Y: (side - 1) / 2,
-		}, nil
+	switch p {
+	case corners[0]:
+		return Coord{X: halfSide, Y: halfSide}, nil
+	case corners[1]:
+		return Coord{X: -halfSide, Y: halfSide}, nil
+	case corners[2]:
+		return Coord{X: -halfSide, Y: -halfSide}, nil
+	case corners[3]:
+		return Coord{X: halfSide, Y: -halfSide}, nil
 	}
-	if p == corners[1] {
-		return Coord{
-			X: (side - 1) / -2,
-			Y: (side - 1) / 2,
-		}, nil
+	zone, err := PosToZone(p)
+	if err != nil {
+		return Coord{}, fmt.Errorf("calculating zone: %v", err)
 	}
-	if p == corners[2] {
-		return Coord{
-			X: (side - 1) / -2,
-			Y: (side - 1) / -2,
-		}, nil
+	switch zone {
+	case Top:
+		dist := (corners[1] - p)
+		return Coord{X: -halfSide + dist, Y: halfSide}, nil
+	case Left:
+		dist := (corners[2] - p)
+		return Coord{X: -halfSide, Y: -halfSide + dist}, nil
+	case Bottom:
+		dist := (corners[3] - p)
+		return Coord{X: halfSide - dist, Y: -halfSide}, nil
+	case Right:
+		dist := (corners[0] - p)
+		return Coord{X: halfSide, Y: halfSide - dist}, nil
+	default:
+		panic(fmt.Sprintf("unknown zone: %d", zone))
 	}
-	if p == corners[3] {
-		return Coord{
-			X: (side - 1) / 2,
-			Y: (side - 1) / -2,
-		}, nil
-	}
-	return Coord{}, fmt.Errorf("TODO: not implemented yet")
 }
 
 func corners(side int) []int {
