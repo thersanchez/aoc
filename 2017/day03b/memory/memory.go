@@ -16,46 +16,40 @@ func PosToCoord(p int) (Coord, error) {
 		return Coord{}, fmt.Errorf(
 			"calculating ring side: negative position (%d)", p)
 	}
-	halfSide := (side - 1) / 2
-	corners := cornersPos(side)
-	switch p {
-	case corners[0]:
-		return Coord{X: halfSide, Y: halfSide}, nil
-	case corners[1]:
-		return Coord{X: -halfSide, Y: halfSide}, nil
-	case corners[2]:
-		return Coord{X: -halfSide, Y: -halfSide}, nil
-	case corners[3]:
-		return Coord{X: halfSide, Y: -halfSide}, nil
+
+	corners, err := NewCorners(side)
+	if err != nil {
+		return Coord{}, fmt.Errorf("calculating corners: %v", err)
 	}
+
+	for _, c := range corners {
+		if p == c.Pos {
+			return c.Coord, nil
+		}
+	}
+
 	zone, err := PosToZone(p)
 	if err != nil {
 		return Coord{}, fmt.Errorf("calculating zone: %v", err)
 	}
+
+	halfSide := (side - 1) / 2
 	switch zone {
 	case Top:
-		dist := (corners[1] - p)
+		dist := (corners[1].Pos - p)
 		return Coord{X: -halfSide + dist, Y: halfSide}, nil
 	case Left:
-		dist := (corners[2] - p)
+		dist := (corners[2].Pos - p)
 		return Coord{X: -halfSide, Y: -halfSide + dist}, nil
 	case Bottom:
-		dist := (corners[3] - p)
+		dist := (corners[3].Pos - p)
 		return Coord{X: halfSide - dist, Y: -halfSide}, nil
 	case Right:
-		dist := (corners[0] - p)
+		dist := (corners[0].Pos - p)
 		return Coord{X: halfSide, Y: halfSide - dist}, nil
 	default:
 		panic(fmt.Sprintf("unknown zone: %d", zone))
 	}
-}
-
-func cornersPos(side int) []int {
-	br := (side * side) - 1
-	bl := br - (side - 1)
-	tl := bl - (side - 1)
-	tr := tl - (side - 1)
-	return []int{tr, tl, bl, br}
 }
 
 // RingSidePos returns the side of the ring containing the given position.
@@ -82,41 +76,33 @@ func CoordToPos(c Coord) int {
 	}
 
 	side := ringSideFromCoord(c)
-	corners := cornersCoord(side)
 
-	// Positions of the corners
-	br := (side * side) - 1
-	bl := br - (side - 1)
-	tl := bl - (side - 1)
-	tr := tl - (side - 1)
+	corners, err := NewCorners(side)
+	if err != nil {
+		panic(fmt.Sprintf("calculating corners: %v", err))
+	}
 
-	// Solve if c is a corner
-	switch c {
-	case corners[0]:
-		return tr
-	case corners[1]:
-		return tl
-	case corners[2]:
-		return bl
-	case corners[3]:
-		return br
+	for _, e := range corners {
+		if c == e.Coord {
+			return e.Pos
+		}
 	}
 
 	// Solve if c is in a side
 	zone := coordToZone(c)
 	switch zone {
 	case Bottom:
-		d := corners[3].X - c.X
-		return br - d
+		d := corners[3].Coord.X - c.X
+		return corners[3].Pos - d
 	case Left:
-		d := c.Y - corners[2].Y
-		return bl - d
+		d := c.Y - corners[2].Coord.Y
+		return corners[2].Pos - d
 	case Top:
-		d := c.X - corners[1].X
-		return tl - d
+		d := c.X - corners[1].Coord.X
+		return corners[1].Pos - d
 	case Right:
-		d := corners[0].Y - c.Y
-		return tr - d
+		d := corners[0].Coord.Y - c.Y
+		return corners[0].Pos - d
 	default:
 		panic(fmt.Sprintf("unknown zone: %d", zone))
 	}
@@ -125,16 +111,6 @@ func CoordToPos(c Coord) int {
 // TODO
 func ringSideFromCoord(c Coord) int {
 	return 5
-}
-
-// TODO
-func cornersCoord(side int) []Coord {
-	return []Coord{
-		Coord{X: 2, Y: 2},
-		Coord{X: -2, Y: 2},
-		Coord{X: -2, Y: -2},
-		Coord{X: 2, Y: -2},
-	}
 }
 
 // TODO
@@ -152,15 +128,20 @@ func PosToZone(p int) (Zone, error) {
 		return Top, fmt.Errorf(
 			"calculating ring side: negative position (%d)", p)
 	}
-	corners := cornersPos(side)
+
+	corners, err := NewCorners(side)
+	if err != nil {
+		return Top, fmt.Errorf("calculating corners: %v", err)
+	}
+
 	switch {
-	case p <= corners[0]:
+	case p <= corners[0].Pos:
 		return Right, nil
-	case p <= corners[1]:
+	case p <= corners[1].Pos:
 		return Top, nil
-	case p <= corners[2]:
+	case p <= corners[2].Pos:
 		return Left, nil
-	case p <= corners[3]:
+	case p <= corners[3].Pos:
 		return Bottom, nil
 	default:
 		panic("internal error")
