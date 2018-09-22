@@ -26,13 +26,13 @@ func PosToCoord(p int) (Coord, error) {
 	if p == 0 {
 		return Coord{X: 0, Y: 0}, nil
 	}
-	side, err := RingSide(p)
+	side, err := RingSidePos(p)
 	if err != nil {
 		return Coord{}, fmt.Errorf(
 			"calculating ring side: negative position (%d)", p)
 	}
 	halfSide := (side - 1) / 2
-	corners := corners(side)
+	corners := cornersPos(side)
 	switch p {
 	case corners[0]:
 		return Coord{X: halfSide, Y: halfSide}, nil
@@ -65,7 +65,7 @@ func PosToCoord(p int) (Coord, error) {
 	}
 }
 
-func corners(side int) []int {
+func cornersPos(side int) []int {
 	br := (side * side) - 1
 	bl := br - (side - 1)
 	tl := bl - (side - 1)
@@ -73,9 +73,9 @@ func corners(side int) []int {
 	return []int{tr, tl, bl, br}
 }
 
-// RingSide returns the side of the ring containing the given position.
+// RingSidePos returns the side of the ring containing the given position.
 // Returns an error with negative positions.
-func RingSide(p int) (int, error) {
+func RingSidePos(p int) (int, error) {
 	if p < 0 {
 		return 0, fmt.Errorf("negative position (%d)", p)
 	}
@@ -91,6 +91,29 @@ func RingSide(p int) (int, error) {
 
 // CoordToPos returns the memory position of an spiral coordinate.
 func CoordToPos(c Coord) int {
+	zero := Coord{X: 0, Y: 0}
+	if c == zero {
+		return 0
+	}
+	//side := RingSideCoord(c)
+	//corners := cornersCoord(side)
+	side := 5
+	corners := []Coord{
+		Coord{X: 2, Y: 2},
+		Coord{X: -2, Y: 2},
+		Coord{X: -2, Y: -2},
+		Coord{X: 2, Y: -2},
+	}
+	switch c {
+	case corners[0]:
+		return (side * side) - 1 - 3*(side-1)
+	case corners[1]:
+		return (side * side) - 1 - 2*(side-1)
+	case corners[2]:
+		return (side * side) - 1 - 1*(side-1)
+	case corners[3]:
+		return (side * side) - 1
+	}
 	return 42
 }
 
@@ -129,12 +152,12 @@ func (z Zone) String() string {
 // Returns an indetermined value if p is located in more than one zone, for
 // instance when p=0 or when p is located in a corner of the ring.
 func PosToZone(p int) (Zone, error) {
-	side, err := RingSide(p)
+	side, err := RingSidePos(p)
 	if err != nil {
 		return Top, fmt.Errorf(
 			"calculating ring side: negative position (%d)", p)
 	}
-	corners := corners(side)
+	corners := cornersPos(side)
 	switch {
 	case p <= corners[0]:
 		return Right, nil

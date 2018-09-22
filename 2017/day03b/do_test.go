@@ -203,7 +203,7 @@ func TestCoordToPos(t *testing.T) {
 	}
 }
 
-func TestRingSideOK(t *testing.T) {
+func TestRingSidePosOK(t *testing.T) {
 	t.Parallel()
 	for _, tt := range []struct {
 		input int
@@ -243,7 +243,7 @@ func TestRingSideOK(t *testing.T) {
 		description := fmt.Sprint(tt.input)
 		t.Run(description, func(t *testing.T) {
 			t.Parallel()
-			got, err := day03b.RingSide(tt.input)
+			got, err := day03b.RingSidePos(tt.input)
 			if err != nil {
 				t.Errorf("unexpected error (%v)", err)
 			}
@@ -254,7 +254,7 @@ func TestRingSideOK(t *testing.T) {
 	}
 }
 
-func TestRingSideError(t *testing.T) {
+func TestRingSidePosError(t *testing.T) {
 	t.Parallel()
 	for _, pos := range []int{
 		-1, -2, -1000,
@@ -262,7 +262,7 @@ func TestRingSideError(t *testing.T) {
 		pos := pos
 		t.Run(fmt.Sprint(pos), func(t *testing.T) {
 			t.Parallel()
-			if _, err := day03b.RingSide(pos); err == nil {
+			if _, err := day03b.RingSidePos(pos); err == nil {
 				t.Errorf("unexpected success (pos=%d)", pos)
 			}
 		})
