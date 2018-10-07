@@ -95,26 +95,66 @@ func CoordToPos(c Coord) int {
 	if c == zero {
 		return 0
 	}
-	//side := RingSideCoord(c)
-	//corners := cornersCoord(side)
-	side := 5
-	corners := []Coord{
+
+	side := ringSideFromCoord(c)
+	corners := cornersCoord(side)
+
+	// Positions of the corners
+	br := (side * side) - 1
+	bl := br - (side - 1)
+	tl := bl - (side - 1)
+	tr := tl - (side - 1)
+
+	// Solve if c is a corner
+	switch c {
+	case corners[0]:
+		return tr
+	case corners[1]:
+		return tl
+	case corners[2]:
+		return bl
+	case corners[3]:
+		return br
+	}
+
+	// Solve if c is in a side
+	zone := coordToZone(c)
+	switch zone {
+	case Bottom:
+		d := corners[3].X - c.X
+		return br - d
+	case Left:
+		d := c.Y - corners[2].Y
+		return bl - d
+	case Top:
+		d := c.X - corners[1].X
+		return tl - d
+	case Right:
+		d := corners[0].Y - c.Y
+		return tr - d
+	default:
+		panic(fmt.Sprintf("unknown zone: %d", zone))
+	}
+}
+
+// TODO
+func ringSideFromCoord(c Coord) int {
+	return 5
+}
+
+// TODO
+func cornersCoord(side int) []Coord {
+	return []Coord{
 		Coord{X: 2, Y: 2},
 		Coord{X: -2, Y: 2},
 		Coord{X: -2, Y: -2},
 		Coord{X: 2, Y: -2},
 	}
-	switch c {
-	case corners[0]:
-		return (side * side) - 1 - 3*(side-1)
-	case corners[1]:
-		return (side * side) - 1 - 2*(side-1)
-	case corners[2]:
-		return (side * side) - 1 - 1*(side-1)
-	case corners[3]:
-		return (side * side) - 1
-	}
-	return 42
+}
+
+// TODO
+func coordToZone(c Coord) Zone {
+	return Top
 }
 
 // Zone defines the four regions of a ring.
