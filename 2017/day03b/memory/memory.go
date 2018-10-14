@@ -2,7 +2,6 @@ package memory
 
 import (
 	"fmt"
-	"math"
 )
 
 // PosToCoord returns the spiral coordinate of a memory position.
@@ -11,7 +10,7 @@ func PosToCoord(p int) (Coord, error) {
 	if p == 0 {
 		return Coord{X: 0, Y: 0}, nil
 	}
-	side, err := RingSidePos(p)
+	side, err := RingSideFromPos(p)
 	if err != nil {
 		return Coord{}, fmt.Errorf(
 			"calculating ring side: negative position (%d)", p)
@@ -52,22 +51,6 @@ func PosToCoord(p int) (Coord, error) {
 	}
 }
 
-// RingSidePos returns the side of the ring containing the given position.
-// Returns an error with negative positions.
-func RingSidePos(p int) (int, error) {
-	if p < 0 {
-		return 0, fmt.Errorf("negative position (%d)", p)
-	}
-	if p == 0 {
-		return 1, nil
-	}
-	sqrt := int(math.Sqrt(float64(p)))
-	if sqrt%2 == 0 {
-		sqrt--
-	}
-	return sqrt + 2, nil
-}
-
 // CoordToPos returns the memory position of an spiral coordinate.
 func CoordToPos(c Coord) int {
 	zero := Coord{X: 0, Y: 0}
@@ -75,13 +58,14 @@ func CoordToPos(c Coord) int {
 		return 0
 	}
 
-	side := ringSideFromCoord(c)
+	side := RingSideFromCoord(c)
 
 	corners, err := NewCorners(side)
 	if err != nil {
 		panic(fmt.Sprintf("calculating corners: %v", err))
 	}
 
+	// Solve if c is in a corner
 	for _, e := range corners {
 		if c == e.Coord {
 			return e.Pos
@@ -109,11 +93,6 @@ func CoordToPos(c Coord) int {
 }
 
 // TODO
-func ringSideFromCoord(c Coord) int {
-	return 5
-}
-
-// TODO
 func coordToZone(c Coord) Zone {
 	return Top
 }
@@ -123,7 +102,7 @@ func coordToZone(c Coord) Zone {
 // Returns an indetermined value if p is located in more than one zone, for
 // instance when p=0 or when p is located in a corner of the ring.
 func PosToZone(p int) (Zone, error) {
-	side, err := RingSidePos(p)
+	side, err := RingSideFromPos(p)
 	if err != nil {
 		return Top, fmt.Errorf(
 			"calculating ring side: negative position (%d)", p)
