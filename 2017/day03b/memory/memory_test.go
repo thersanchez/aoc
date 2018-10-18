@@ -177,3 +177,51 @@ func TestPosToZoneError(t *testing.T) {
 		})
 	}
 }
+
+func TestCoordToZoneOK(t *testing.T) {
+	t.Parallel()
+	for _, tt := range []struct {
+		input memory.Coord
+		want  memory.Zone
+	}{
+		// (0,0) returns and indeterminate value
+		{input: memory.Coord{X: 1, Y: 0}, want: memory.Right},
+		// (1,1) returns and indeterminate value
+		{input: memory.Coord{X: 0, Y: 1}, want: memory.Top},
+		// (-1,1) returns and indeterminate value
+		{input: memory.Coord{X: -1, Y: 0}, want: memory.Left},
+		// (-1,-1) returns and indeterminate value
+		{input: memory.Coord{X: 0, Y: -1}, want: memory.Bottom},
+		// (1,-1) returns and indeterminate value
+		{input: memory.Coord{X: 2, Y: -1}, want: memory.Right},
+		{input: memory.Coord{X: 2, Y: 0}, want: memory.Right},
+		{input: memory.Coord{X: 2, Y: 1}, want: memory.Right},
+		// (2,2) returns and indeterminate value
+		{input: memory.Coord{X: 1, Y: 2}, want: memory.Top},
+		{input: memory.Coord{X: 0, Y: 2}, want: memory.Top},
+		{input: memory.Coord{X: -1, Y: 2}, want: memory.Top},
+		// (-2,2) returns and indeterminate value
+		{input: memory.Coord{X: -2, Y: 1}, want: memory.Left},
+		{input: memory.Coord{X: -2, Y: 0}, want: memory.Left},
+		{input: memory.Coord{X: -2, Y: -1}, want: memory.Left},
+		// (-2,-2) returns and indeterminate value
+		{input: memory.Coord{X: -1, Y: -2}, want: memory.Bottom},
+		{input: memory.Coord{X: 0, Y: -2}, want: memory.Bottom},
+		{input: memory.Coord{X: 1, Y: -2}, want: memory.Bottom},
+		// (2,-2) returns and indeterminate value
+		{input: memory.Coord{X: 3, Y: -2}, want: memory.Right},
+		{input: memory.Coord{X: 1, Y: 3}, want: memory.Top},
+		{input: memory.Coord{X: -3, Y: -1}, want: memory.Left},
+		{input: memory.Coord{X: 0, Y: -3}, want: memory.Bottom},
+	} {
+		tt := tt
+		description := fmt.Sprint(tt.input)
+		t.Run(description, func(t *testing.T) {
+			t.Parallel()
+			got := memory.CoordToZone(tt.input)
+			if tt.want != got {
+				t.Errorf("want=%v, got=%v", tt.want, got)
+			}
+		})
+	}
+}
