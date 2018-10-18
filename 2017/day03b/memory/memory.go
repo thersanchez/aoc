@@ -73,7 +73,7 @@ func CoordToPos(c Coord) int {
 	}
 
 	// Solve if c is in a side
-	zone := coordToZone(c)
+	zone := CoordToZone(c)
 	switch zone {
 	case Bottom:
 		d := corners[3].Coord.X - c.X
@@ -92,15 +92,28 @@ func CoordToPos(c Coord) int {
 	}
 }
 
-// TODO
-func coordToZone(c Coord) Zone {
-	return Top
+// CoordToZone returns the ring's zone for a given coordinate (c).
+// Returns an indetermined value if c is located in more than one zone,
+// for instance when c is a corner of the ring.
+func CoordToZone(c Coord) Zone {
+	absX := abs(c.X)
+	absY := abs(c.Y)
+	switch {
+	case absY > absX && c.Y > 0:
+		return Top
+	case absX > absY && c.X < 0:
+		return Left
+	case absY > absX && c.Y < 0:
+		return Bottom
+	default:
+		return Right
+	}
 }
 
 // PosToZone returns the ring's zone for a given position (p).
 // Returns an error if p is negative.
-// Returns an indetermined value if p is located in more than one zone, for
-// instance when p=0 or when p is located in a corner of the ring.
+// Returns an indetermined value if p is located in more than one zone,
+// for instance when p=0 or when p is located in a corner of the ring.
 func PosToZone(p int) (Zone, error) {
 	side, err := RingSideFromPos(p)
 	if err != nil {
