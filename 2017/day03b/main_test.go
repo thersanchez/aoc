@@ -63,28 +63,9 @@ func TestDoOK(t *testing.T) {
 		description := fmt.Sprint(tt.input)
 		t.Run(description, func(t *testing.T) {
 			t.Parallel()
-			got, err := day03b.Do(tt.input)
-			if err != nil {
-				t.Errorf("unexpected error (%v)", err)
-			}
+			got := day03b.Do(tt.input)
 			if tt.want != got {
 				t.Errorf("want=%d, got=%d", tt.want, got)
-			}
-		})
-	}
-}
-
-func TestDoError(t *testing.T) {
-	t.Parallel()
-	for _, pos := range []int{
-		-1, -2, -1000,
-	} {
-		pos := pos
-		description := fmt.Sprint(pos)
-		t.Run(description, func(t *testing.T) {
-			t.Parallel()
-			if _, err := day03b.Do(pos); err == nil {
-				t.Errorf("unexpected success (pos=%d)", pos)
 			}
 		})
 	}
