@@ -7,6 +7,74 @@ import (
 	"github.com/thersanchez/aoc/2017/day03b/memory"
 )
 
+func TestCalculateValueOK(t *testing.T) {
+	t.Parallel()
+	for _, tt := range []struct {
+		pos  int
+		want int
+	}{
+		{pos: 0, want: 1},
+		{pos: 1, want: 1},
+		{pos: 2, want: 2},
+		{pos: 3, want: 4},
+		{pos: 4, want: 5},
+		{pos: 5, want: 10},
+		{pos: 6, want: 11},
+		{pos: 7, want: 23},
+		{pos: 8, want: 25},
+		{pos: 9, want: 26},
+		{pos: 10, want: 54},
+		{pos: 11, want: 57},
+		{pos: 12, want: 59},
+		{pos: 13, want: 122},
+		{pos: 14, want: 133},
+		{pos: 15, want: 142},
+		{pos: 16, want: 147},
+		{pos: 17, want: 304},
+		{pos: 18, want: 330},
+		{pos: 19, want: 351},
+		{pos: 20, want: 362},
+		{pos: 21, want: 747},
+		{pos: 22, want: 806},
+		{pos: 23, want: 880},
+		{pos: 24, want: 931},
+		{pos: 25, want: 957},
+		{pos: 26, want: 1968},
+		{pos: 27, want: 2105},
+		{pos: 28, want: 2275},
+		{pos: 29, want: 2450},
+	} {
+		tt := tt
+		description := fmt.Sprint(tt.pos)
+		t.Run(description, func(t *testing.T) {
+			t.Parallel()
+			got, err := memory.CalculateValue(tt.pos)
+			if err != nil {
+				t.Errorf("unexpected error (%v)", err)
+			}
+			if tt.want != got {
+				t.Errorf("want=%d, got=%d", tt.want, got)
+			}
+		})
+	}
+}
+
+func TestCalculateValueError(t *testing.T) {
+	t.Parallel()
+	for _, tt := range []int{
+		-1, -100,
+	} {
+		tt := tt
+		t.Run(fmt.Sprint(tt), func(t *testing.T) {
+			t.Parallel()
+			_, err := memory.CalculateValue(tt)
+			if err == nil {
+				t.Errorf("unexpected success")
+			}
+		})
+	}
+}
+
 var posCoordTable = []struct {
 	pos   int
 	coord memory.Coord
