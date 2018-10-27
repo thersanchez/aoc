@@ -14,10 +14,7 @@ func main() {
 func Do(target int) int {
 	mem := []int{1}
 	for p := 1; ; p++ {
-		v, err := memory.CalculateValue(p)
-		if err != nil {
-			panic(err)
-		}
+		v := memory.CalculateValue(p)
 		mem = append(mem, v)
 		if v > target {
 			return v
