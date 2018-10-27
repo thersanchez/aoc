@@ -6,14 +6,22 @@ import (
 
 // CalculateValue calculates the value at the memory position p.
 func CalculateValue(p int) int {
+	vv := map[int]int{0: 1}
+	return calculateValue(p, vv)
+}
+
+func calculateValue(p int, vv map[int]int) int {
 	if p == 0 {
-		return 1
+		return vv[0]
 	}
 
 	sum := 0
 	for _, n := range neighbours(p) {
 		if n < p {
-			sum += CalculateValue(n)
+			if _, ok := vv[n]; !ok {
+				vv[n] = calculateValue(n, vv)
+			}
+			sum += vv[n]
 		}
 	}
 
