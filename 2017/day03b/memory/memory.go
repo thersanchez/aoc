@@ -1,52 +1,23 @@
 package memory
 
 import (
-	"errors"
 	"fmt"
 )
 
-var table = map[int]int{
-	0:  1,
-	1:  1,
-	2:  2,
-	3:  4,
-	4:  5,
-	5:  10,
-	6:  11,
-	7:  23,
-	8:  25,
-	9:  26,
-	10: 54,
-	11: 57,
-	12: 59,
-	13: 122,
-	14: 133,
-	15: 142,
-	16: 147,
-	17: 304,
-	18: 330,
-	19: 351,
-	20: 362,
-	21: 747,
-	22: 806,
-	23: 880,
-	24: 931,
-	25: 957,
-	26: 1968,
-	27: 2105,
-	28: 2275,
-	29: 2450,
-}
-
 // CalculateValue calculates the value at the memory position p.
-func CalculateValue(p int) (int, error) {
-	if p < 0 {
-		return 0, errors.New("negative position")
+func CalculateValue(p int) int {
+	if p == 0 {
+		return 1
 	}
-	if p > 29 {
-		return 0, errors.New("TODO implement this")
+
+	sum := 0
+	for _, n := range neighbours(p) {
+		if n < p {
+			sum += CalculateValue(n)
+		}
 	}
-	return table[p], nil
+
+	return sum
 }
 
 // PosToCoord returns the spiral coordinate of a memory position.
@@ -94,6 +65,28 @@ func PosToCoord(p int) (Coord, error) {
 	default:
 		panic(fmt.Sprintf("unknown zone: %d", zone))
 	}
+}
+
+func neighbours(p int) [8]int {
+	c, err := PosToCoord(p)
+	if err != nil {
+		panic(fmt.Sprintf("calculating coordinate for pos %d: %v", p, err))
+	}
+	neighbours := [8]Coord{
+		{X: c.X + 1, Y: c.Y},
+		{X: c.X + 1, Y: c.Y + 1},
+		{X: c.X, Y: c.Y + 1},
+		{X: c.X - 1, Y: c.Y + 1},
+		{X: c.X - 1, Y: c.Y},
+		{X: c.X - 1, Y: c.Y - 1},
+		{X: c.X, Y: c.Y - 1},
+		{X: c.X + 1, Y: c.Y - 1},
+	}
+	var pp [8]int
+	for i, n := range neighbours {
+		pp[i] = CoordToPos(n)
+	}
+	return pp
 }
 
 // CoordToPos returns the memory position of an spiral coordinate.

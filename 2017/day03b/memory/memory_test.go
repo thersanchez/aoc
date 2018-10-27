@@ -7,7 +7,7 @@ import (
 	"github.com/thersanchez/aoc/2017/day03b/memory"
 )
 
-func TestCalculateValueOK(t *testing.T) {
+func TestCalculateValue(t *testing.T) {
 	t.Parallel()
 	for _, tt := range []struct {
 		pos  int
@@ -42,34 +42,16 @@ func TestCalculateValueOK(t *testing.T) {
 		{pos: 26, want: 1968},
 		{pos: 27, want: 2105},
 		{pos: 28, want: 2275},
-		{pos: 29, want: 2450},
+		{pos: 29, want: 2391},
+		{pos: 30, want: 2450},
 	} {
 		tt := tt
 		description := fmt.Sprint(tt.pos)
 		t.Run(description, func(t *testing.T) {
 			t.Parallel()
-			got, err := memory.CalculateValue(tt.pos)
-			if err != nil {
-				t.Errorf("unexpected error (%v)", err)
-			}
+			got := memory.CalculateValue(tt.pos)
 			if tt.want != got {
 				t.Errorf("want=%d, got=%d", tt.want, got)
-			}
-		})
-	}
-}
-
-func TestCalculateValueError(t *testing.T) {
-	t.Parallel()
-	for _, tt := range []int{
-		-1, -100,
-	} {
-		tt := tt
-		t.Run(fmt.Sprint(tt), func(t *testing.T) {
-			t.Parallel()
-			_, err := memory.CalculateValue(tt)
-			if err == nil {
-				t.Errorf("unexpected success")
 			}
 		})
 	}
