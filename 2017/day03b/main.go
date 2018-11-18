@@ -12,10 +12,8 @@ func main() {
 
 // Do solves day03b.
 func Do(target int) int {
-	mem := []int{1}
 	for p := 1; ; p++ {
 		v := memory.CalculateValue(p)
-		mem = append(mem, v)
 		if v > target {
 			return v
 		}
