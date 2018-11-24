@@ -11,12 +11,13 @@ func main() {
 		usage()
 		os.Exit(1)
 	}
-	f, err := os.Open(os.Args[1])
+	file, err := os.Open(os.Args[1])
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	do(f)
+	validPassPhases := do(file)
+	fmt.Println(validPassPhases)
 }
 
 func usage() {
