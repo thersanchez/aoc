@@ -15,7 +15,7 @@ func do(r io.Reader) int {
 	for lineScanner.Scan() {
 		line := lineScanner.Text()
 		reader := strings.NewReader(line)
-		if !hasDuplicateWords(reader) {
+		if !hasDuplicatedWords(reader) {
 			counter++
 		}
 	}
@@ -25,14 +25,21 @@ func do(r io.Reader) int {
 	return counter
 }
 
-func hasDuplicateWords(line io.Reader) bool {
+// HasDuplicatedWords returs if the line has duplicated words.
+func hasDuplicatedWords(line io.Reader) bool {
 	scanner := bufio.NewScanner(line)
 	scanner.Split(bufio.ScanWords)
+	wordsSeen := make(map[string]struct{})
 	for scanner.Scan() {
+		word := scanner.Text()
+		_, seen := wordsSeen[word]
+		if seen {
+			return true
+		}
+		wordsSeen[word] = struct{}{}
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatalf("scanning by words: %v", err)
 	}
-	// todo
-	return true
+	return false
 }
