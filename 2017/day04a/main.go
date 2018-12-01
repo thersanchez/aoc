@@ -21,5 +21,5 @@ func main() {
 }
 
 func usage() {
-	fmt.Fprintln(os.Stderr, "\n\tday04a file_name")
+	fmt.Fprintln(os.Stderr, "want only one argument, the name of the file with the passphrases")
 }
