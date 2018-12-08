@@ -5,9 +5,11 @@ import (
 	"testing"
 )
 
-var aoc = `aa bb cc dd ee
-aa bb cc dd aa
-aa bb cc dd aaa`
+// an valid passphrase
+var v = "aa bb\n"
+
+// an invalid passphrase
+var i = "aa aa\n"
 
 func TestDo(t *testing.T) {
 	t.Parallel()
@@ -17,10 +19,6 @@ func TestDo(t *testing.T) {
 		want  int
 	}{
 		{
-			desc:  "empty",
-			input: "",
-			want:  0, // 1?
-		}, {
 			desc:  "aoc1",
 			input: "abcde fghij",
 			want:  1,
@@ -41,9 +39,69 @@ func TestDo(t *testing.T) {
 			input: "oiii ioii iioi iiio",
 			want:  0,
 		}, {
-			desc:  "aoc2",
-			input: "abcde xyz ecdab",
+			desc:  "empty",
+			input: "",
+			want:  0, // empty passphrases are not valid
+		}, {
+			desc:  "one passphrase, zero valid",
+			input: i,
 			want:  0,
+		}, {
+			desc:  "two passphrases, zero valid",
+			input: i + i,
+			want:  0,
+		}, {
+			desc:  "five passphrases, zero valid",
+			input: i + i + i + i + i,
+			want:  0,
+		}, {
+			desc:  "five passphrases, one empty, zero valid",
+			input: i + i + "\n" + i + i,
+			want:  0,
+		}, {
+			desc:  "five passphrases, all empty, zero valid",
+			input: "\n\n\n\n",
+			want:  0,
+		}, {
+			desc:  "one passphrase, one valid",
+			input: v,
+			want:  1,
+		}, {
+			desc:  "one valid, one invalid",
+			input: v + i,
+			want:  1,
+		}, {
+			desc:  "one invalid, one valid",
+			input: i + v,
+			want:  1,
+		}, {
+			desc:  "viiii",
+			input: v + i + i + i + i,
+			want:  1,
+		}, {
+			desc:  "iivii",
+			input: i + i + v + i + i,
+			want:  1,
+		}, {
+			desc:  "iiiiv",
+			input: i + i + i + i + v,
+			want:  1,
+		}, {
+			desc:  "vv",
+			input: v + v,
+			want:  2,
+		}, {
+			desc:  "vivii",
+			input: v + i + v + i + i,
+			want:  2,
+		}, {
+			desc:  "iiivv",
+			input: i + i + i + v + v,
+			want:  2,
+		}, {
+			desc:  "vvvvv",
+			input: v + v + v + v + v,
+			want:  5,
 		},
 	} {
 		test := test
@@ -57,7 +115,7 @@ func TestDo(t *testing.T) {
 	}
 }
 
-func TestHasDuplicatedWords(t *testing.T) {
+func TestIsValidPassphrase(t *testing.T) {
 	t.Parallel()
 	for _, test := range []struct {
 		desc  string
@@ -65,35 +123,75 @@ func TestHasDuplicatedWords(t *testing.T) {
 		want  bool
 	}{
 		{
-			desc:  "empty",
+			desc:  "empty", // empty passphrases are invalid
 			input: "",
 			want:  false,
 		}, {
-			desc:  "one word",
+			desc:  "one word", // a single word is always valid
 			input: "aa",
-			want:  false,
+			want:  true,
 		}, {
-			desc:  "two different words",
+			desc:  "two non-anagrams words",
 			input: "aa bb",
-			want:  false,
+			want:  true,
 		}, {
-			desc:  "two equal words",
+			desc:  "two equal words", // equal words are anagrams
 			input: "aa aa",
-			want:  true,
-		}, {
-			desc:  "many non duplicated words",
-			input: "aa bb cc dd ee aaa bbb aabb bbaa",
 			want:  false,
 		}, {
-			desc:  "duplicated word among many",
-			input: "aa bb cc dd ee aaa bbb cc aabb bbaa",
-			want:  true,
+			desc:  "two anagrams",
+			input: "ab ba",
+			want:  false,
+		}, {
+			desc:  "two anagrams among many",
+			input: "aa XY cc dd YX ee",
+			want:  false,
 		},
 	} {
 		test := test
 		t.Run(test.desc, func(t *testing.T) {
 			t.Parallel()
-			got := hasDuplicatedWords(strings.NewReader(test.input))
+			got := isValidPassphrase(strings.NewReader(test.input))
+			if got != test.want {
+				t.Errorf("want %t, got %t", test.want, got)
+			}
+		})
+	}
+}
+
+func TestAreAnagrams(t *testing.T) {
+	t.Parallel()
+	for _, test := range []struct {
+		desc string
+		a, b string
+		want bool
+	}{
+		{
+			desc: "same word",
+			a:    "aa",
+			b:    "aa",
+			want: true,
+		}, {
+			desc: "no anagrams",
+			a:    "aa",
+			b:    "bb",
+			want: false,
+		}, {
+			desc: "anagrams",
+			a:    "ab",
+			b:    "ba",
+			want: true,
+		}, {
+			desc: "same letters, different letter frequency",
+			a:    "ana",
+			b:    "ann",
+			want: false,
+		},
+	} {
+		test := test
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+			got := areAnagrams(test.a, test.b)
 			if got != test.want {
 				t.Errorf("want %t, got %t", test.want, got)
 			}
