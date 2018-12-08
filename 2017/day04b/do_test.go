@@ -41,7 +41,7 @@ func TestDo(t *testing.T) {
 		}, {
 			desc:  "empty",
 			input: "",
-			want:  0, // empty passphrases are not valid
+			want:  0, // no passphrases means zero valid
 		}, {
 			desc:  "one passphrase, zero valid",
 			input: i,
@@ -57,11 +57,11 @@ func TestDo(t *testing.T) {
 		}, {
 			desc:  "five passphrases, one empty, zero valid",
 			input: i + i + "\n" + i + i,
-			want:  0,
+			want:  1, // an empty passphrase is valid
 		}, {
 			desc:  "five passphrases, all empty, zero valid",
 			input: "\n\n\n\n",
-			want:  0,
+			want:  4, // all empty passphrases are valid
 		}, {
 			desc:  "one passphrase, one valid",
 			input: v,
@@ -123,9 +123,9 @@ func TestIsValidPassphrase(t *testing.T) {
 		want  bool
 	}{
 		{
-			desc:  "empty", // empty passphrases are invalid
+			desc:  "empty", // empty passphrases are valid
 			input: "",
-			want:  false,
+			want:  true,
 		}, {
 			desc:  "one word", // a single word is always valid
 			input: "aa",

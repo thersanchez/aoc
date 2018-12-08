@@ -26,7 +26,7 @@ func do(r io.Reader) int {
 }
 
 // isValidPassphrase returs if the line has no anagrams.
-// Also, an empty line is invalid.
+// Therefore, an empty line is valid.
 func isValidPassphrase(line io.Reader) bool {
 	scanner := bufio.NewScanner(line)
 	scanner.Split(bufio.ScanWords)
@@ -48,16 +48,31 @@ func isValidPassphrase(line io.Reader) bool {
 }
 
 func areAnagrams(a, b string) bool {
-	if len(a) != len(b) {
-		return false
-	}
-
-	return false
+	fa := letterFrequencies(a)
+	fb := letterFrequencies(b)
+	return equalFrequencies(fa, fb)
 }
+
 func letterFrequencies(w string) map[rune]int {
-	return nil
+	m := make(map[rune]int)
+	for _, r := range w {
+		m[r] = m[r] + 1
+	}
+	return m
 }
 
 func equalFrequencies(a, b map[rune]int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for r, fa := range a {
+		fb, ok := b[r]
+		if !ok {
+			return false
+		}
+		if fa != fb {
+			return false
+		}
+	}
 	return true
 }
