@@ -4,7 +4,6 @@ import "fmt"
 
 // Mem represents the computer memory of fixed size.
 type Mem struct {
-	size int
 	data []int
 }
 
@@ -15,7 +14,6 @@ func New(size int) (Mem, error) {
 		return Mem{}, fmt.Errorf("negative size")
 	}
 	return Mem{
-		size: size,
 		data: make([]int, size),
 	}, nil
 }
@@ -23,11 +21,24 @@ func New(size int) (Mem, error) {
 // Read returns the value stored in the address addr.
 // Returns an error if the address is <0 or >= than the memory size.
 func (m Mem) Read(addr int) (int, error) {
-	return 0, fmt.Errorf("TODO test me")
+	if addr < 0 {
+		return 0, fmt.Errorf("negative addr: %d", addr)
+	}
+	if addr >= len(m.data) {
+		return 0, fmt.Errorf("addr (%d) out of bounds(%d)", addr, len(m.data))
+	}
+	return m.data[addr], nil
 }
 
 // Write stores the value at the address addr.
 // Returns an error if the address is <0 or >= than the memory size.
 func (m Mem) Write(value, addr int) error {
-	return fmt.Errorf("TODO test me")
+	if addr < 0 {
+		return fmt.Errorf("negative addr: %d", addr)
+	}
+	if addr >= len(m.data) {
+		return fmt.Errorf("addr (%d) out of bounds(%d)", addr, len(m.data))
+	}
+	m.data[addr] = value
+	return nil
 }
