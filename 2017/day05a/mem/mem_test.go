@@ -8,7 +8,7 @@ import (
 )
 
 // Checks that negative memory sizes are invalid.
-func TestNewNegativeSizeError(t *testing.T) {
+func TestMemNewNegativeSizeError(t *testing.T) {
 	t.Parallel()
 	for _, size := range []int{
 		-1, -3, -1000,
@@ -24,7 +24,7 @@ func TestNewNegativeSizeError(t *testing.T) {
 	}
 }
 
-func TestNewInitializesToZero(t *testing.T) {
+func TestMemNewInitializesToZero(t *testing.T) {
 	t.Parallel()
 	for _, size := range []int{
 		1, 3, 1000,
@@ -51,7 +51,7 @@ func TestNewInitializesToZero(t *testing.T) {
 }
 
 // checks that zero sized memories always returns errors when reading or writing.
-func TestNewZeroSizeMemory(t *testing.T) {
+func TestMemNewZeroSizeMemory(t *testing.T) {
 	t.Parallel()
 	m, err := mem.New(0)
 	if err != nil {
@@ -84,7 +84,7 @@ func TestNewZeroSizeMemory(t *testing.T) {
 }
 
 // checks that read returns the values inserted previously by write.
-func TestReadReturnsDataWrittenWithWrite(t *testing.T) {
+func TestMemReadReturnsDataWrittenWithWrite(t *testing.T) {
 	t.Parallel()
 
 	size := 3
@@ -115,7 +115,7 @@ func TestReadReturnsDataWrittenWithWrite(t *testing.T) {
 }
 
 // checks that read detects when the given addr is out of bounds.
-func TestReadDetectsInvalidAddr(t *testing.T) {
+func TestMemReadDetectsInvalidAddr(t *testing.T) {
 	t.Parallel()
 
 	size := 10
@@ -138,7 +138,7 @@ func TestReadDetectsInvalidAddr(t *testing.T) {
 }
 
 // checks that write detects when the given addr is out of bounds.
-func TestWriteDetectsInvalidAddr(t *testing.T) {
+func TestMemWriteDetectsInvalidAddr(t *testing.T) {
 	t.Parallel()
 
 	size := 10
