@@ -13,7 +13,7 @@ type AutoInc struct {
 // ReadWriter knows how to read and write integers from addresses.
 type ReadWriter interface {
 	Read(addr int) (int, error)
-	Write(value, addr int) error
+	Write(addr, value int) error
 }
 
 // NewAutoInc returns a new AutoInc using the given Mem as its
@@ -33,7 +33,7 @@ func (ai AutoInc) ReadAndInc(addr int) (int, error) {
 		return 0, fmt.Errorf("reading: %v", err)
 	}
 
-	err = ai.rw.Write(v+1, addr)
+	err = ai.rw.Write(addr, v+1)
 	if err != nil {
 		return 0, fmt.Errorf("writing: %v", err)
 	}

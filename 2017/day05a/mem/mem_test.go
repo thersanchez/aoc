@@ -69,7 +69,7 @@ func TestMemNewZeroSizeMemory(t *testing.T) {
 	if err == nil {
 		t.Errorf("unexpected success reading from 100")
 	}
-	err = m.Write(1, 0)
+	err = m.Write(0, 1)
 	if err == nil {
 		t.Errorf("unexpected success writing to 0")
 	}
@@ -77,7 +77,7 @@ func TestMemNewZeroSizeMemory(t *testing.T) {
 	if err == nil {
 		t.Errorf("unexpected success writing to 1")
 	}
-	err = m.Write(1, 100)
+	err = m.Write(100, 1)
 	if err == nil {
 		t.Errorf("unexpected success writing to 100")
 	}
@@ -100,7 +100,7 @@ func TestMemReadReturnsDataWrittenWithWrite(t *testing.T) {
 			if err != nil {
 				t.Fatal()
 			}
-			if err = m.Write(want, addr); err != nil {
+			if err = m.Write(addr, want); err != nil {
 				t.Fatal()
 			}
 			got, err := m.Read(addr)
@@ -153,7 +153,7 @@ func TestMemWriteDetectsInvalidAddr(t *testing.T) {
 			if err != nil {
 				t.Fatal()
 			}
-			if err := m.Write(42, addr); err == nil {
+			if err := m.Write(addr, 42); err == nil {
 				t.Errorf("unexpected success")
 			}
 		})

@@ -32,7 +32,7 @@ func (m Mem) Read(addr int) (int, error) {
 
 // Write stores the value at the address addr.
 // Returns an error if the address is <0 or >= than the memory size.
-func (m Mem) Write(value, addr int) error {
+func (m Mem) Write(addr, value int) error {
 	if addr < 0 {
 		return fmt.Errorf("negative addr: %d", addr)
 	}
