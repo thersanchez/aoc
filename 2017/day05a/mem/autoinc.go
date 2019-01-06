@@ -4,7 +4,7 @@ import "fmt"
 
 // AutoInc is a Mem that increments in 1 every value it reads.
 type AutoInc struct {
-	m Mem // tiene dentro una memeoria Mem
+	m Mem
 }
 
 // NewAutoInc returns a new AutoInc using the given Mem as its
