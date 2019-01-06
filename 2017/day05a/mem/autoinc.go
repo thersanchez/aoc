@@ -2,8 +2,6 @@ package mem
 
 import "fmt"
 
-// AutoInc is a Mem that increments in 1 every value it reads.
-
 // AutoInc wraps a ReadWritter so that each time it reads,
 // the value at the address being read is incremented in one.
 type AutoInc struct {

@@ -1,40 +1,104 @@
 package mem_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/thersanchez/aoc/2017/day05a/mem"
 )
 
-// Checks that everytime you read from a memory address you get the
-// previous value plus one.
-func TestAutoInc(t *testing.T) {
-	m, err := mem.New(2)
-	if err != nil {
-		t.Fatal(err)
-	}
-	sut := mem.NewAutoInc(m)
-
-	// reading from 0 should return 0 (next read should return 1)
-	check(t, sut, 0, 0)
-	// reading again from 0 should return 1 (next read should return 2)
-	check(t, sut, 0, 1)
-	check(t, sut, 0, 2)
-	check(t, sut, 0, 3)
-	check(t, sut, 0, 4)
-
-	// reading from another addr should return 0, then 1...
-	check(t, sut, 1, 0)
-	check(t, sut, 1, 1)
+type mockMem struct {
+	readCallCount  int
+	writeCallCount int
+	addr           int
+	ok             bool
+	t              *testing.T
 }
 
-func check(t *testing.T, sut mem.AutoInc, addr, want int) {
-	t.Helper()
-	got, err := sut.ReadAndInc(addr)
+func newMockMem(t *testing.T) *mockMem {
+	return &mockMem{
+		t: t,
+	}
+}
+
+func (m *mockMem) Read(addr int) (int, error) {
+	m.readCallCount++
+	if m.readCallCount != 1 {
+		m.t.Fatal("extra read call")
+	}
+	if m.writeCallCount != 0 {
+		m.t.Fatal("read call after calling write")
+	}
+	m.addr = addr
+	return 42, nil
+}
+
+func (m *mockMem) Write(addr, value int) error {
+	m.writeCallCount++
+	if m.writeCallCount != 1 {
+		m.t.Fatal("extra write call")
+	}
+	if m.readCallCount == 0 {
+		m.t.Fatal("write call before calling read")
+	}
+	if m.addr != addr {
+		m.t.Fatalf("wrong addr, want %d, got %d", m.addr, addr)
+	}
+	if value != 43 {
+		m.t.Fatalf("wrong value, want %d, got %d", 43, value)
+	}
+	return nil
+}
+
+// Checks that AutoInc writes the read value +1
+func TestAutoIncHappyPath(t *testing.T) {
+	rw := newMockMem(t)
+	sut := mem.NewAutoInc(rw)
+	got, err := sut.ReadAndInc(0)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if got != want {
-		t.Errorf("want %d, got %d", want, got)
+	if got != 42 {
+		t.Errorf("want %d, got %d", 42, got)
+	}
+}
+
+type mockMemReadError struct{}
+
+func (m *mockMemReadError) Read(addr int) (int, error) {
+	return 0, errors.New("read error")
+}
+
+func (m *mockMemReadError) Write(addr, value int) error {
+	return nil
+}
+
+// Checks that AutoInc handles ReadWriter.Read errors.
+func TestAutoIncReadError(t *testing.T) {
+	rw := &mockMemReadError{}
+	sut := mem.NewAutoInc(rw)
+	got, err := sut.ReadAndInc(0)
+	if err == nil {
+		t.Fatalf("unexpected success, got %d", got)
+	}
+}
+
+type mockMemWriteError struct{}
+
+func (m *mockMemWriteError) Read(addr int) (int, error) {
+	return 42, nil
+}
+
+func (m *mockMemWriteError) Write(addr, value int) error {
+	return errors.New("write error")
+}
+
+// Checks that AutoInc handles ReadWriter.Write errors.
+func TestAutoIncWriteError(t *testing.T) {
+	rw := &mockMemWriteError{}
+	sut := mem.NewAutoInc(rw)
+	got, err := sut.ReadAndInc(0)
+	if err == nil {
+		t.Fatalf("unexpected success, got %d", got)
 	}
 }
