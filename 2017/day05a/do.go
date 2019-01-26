@@ -8,12 +8,10 @@ import (
 )
 
 // Do count the number of steps to reach the exit.
-func do(r io.Reader) int {
-	var m mem.AutoInc
-	load(m, r)
-	return cpu.Run(m)
-}
-
-func load(m mem.AutoInc, r io.Reader) {
-
+func do(r io.Reader) (int, error) {
+	m, err := mem.NewFromReader(r)
+	if err != nil {
+		return 0, err
+	}
+	return cpu.Run(mem.NewAutoInc(m)), nil
 }

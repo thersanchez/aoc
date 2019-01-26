@@ -159,3 +159,11 @@ func TestMemWriteDetectsInvalidAddr(t *testing.T) {
 		})
 	}
 }
+
+func TestNewFromReader(t *testing.T) {
+	t.Fatal("TODO")
+}
+
+func TestNewFromReaderError(t *testing.T) {
+	t.Fatal("TODO")
+}
