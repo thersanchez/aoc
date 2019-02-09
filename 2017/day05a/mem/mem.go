@@ -78,3 +78,8 @@ func (m Mem) Write(addr, value int) error {
 	m.data[addr] = value
 	return nil
 }
+
+// Size returns the size of the memory.
+func (m Mem) Size() int {
+	return len(m.data)
+}
