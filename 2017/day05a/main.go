@@ -25,5 +25,5 @@ func main() {
 }
 
 func usage() {
-	fmt.Fprintln(os.Stderr, "want only one argument, the name of the file with the passphrases")
+	fmt.Fprintln(os.Stderr, "want only one argument, the name of the file with the program to load")
 }
