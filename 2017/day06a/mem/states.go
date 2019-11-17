@@ -8,7 +8,7 @@ func (s States) StoreCopy(m Mem) {
 
 }
 
-// Find returns if the state of m is stored in s.
+// Find returns if the state of m is already stored in s.
 func (s States) Find(m Mem) bool {
 	return false
 }
