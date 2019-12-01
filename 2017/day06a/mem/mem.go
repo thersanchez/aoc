@@ -1,12 +1,17 @@
 package mem
 
-// Mem is a memory that contains 16 banks, each bank contains any number of blocks.
+import "fmt"
+
+// NumBanks is the number of banks in a memory.
+const NumBanks = 16
+
+// Mem is a memory that contains NumBanks banks, each bank contains any number of blocks.
 type Mem struct {
-	banks [16]int
+	banks [NumBanks]int
 }
 
 // NewMem returns a new Mem with the given banks.
-func NewMem(banks [16]int) (Mem, error) {
+func NewMem(banks [NumBanks]int) (Mem, error) {
 	return Mem{banks: banks}, nil
 }
 
@@ -31,6 +36,9 @@ func (m Mem) FindMostCrowded() int {
 // RedistributeBlocks removes all of the blocks from the given bank, then moves to the next (by index)
 // memory bank and inserts one of the blocks. It continues doing this until it runs out of blocks;
 // if it reaches the last memory bank, it wraps around to the first one.
-func (Mem) RedistributeBlocks(pos int) {
-
+func (Mem) RedistributeBlocks(pos int) error {
+	if pos < 0 || pos >= NumBanks {
+		return fmt.Errorf("invalid pos (%d)", pos)
+	}
+	return nil
 }
