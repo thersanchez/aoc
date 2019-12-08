@@ -10,9 +10,7 @@ type Mem struct {
 // NewMem returns a new Mem with a copy of the given banks.
 func NewMem(banks []int) (Mem, error) {
 	dup := make([]int, len(banks))
-	for i, v := range banks {
-		dup[i] = v
-	}
+	copy(dup, banks)
 
 	return Mem{banks: dup}, nil
 }
