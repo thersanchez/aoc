@@ -2,14 +2,19 @@ package mem
 
 import "fmt"
 
-// Mem is a memory that contains NumBanks banks, each bank contains any number of blocks.
+// Mem is a memory that contains a number of banks, each bank contains any number of blocks.
 type Mem struct {
 	banks []int
 }
 
-// NewMem returns a new Mem with the given banks.
+// NewMem returns a new Mem with a copy of the given banks.
 func NewMem(banks []int) (Mem, error) {
-	return Mem{banks: banks}, nil
+	dup := make([]int, len(banks))
+	for i, v := range banks {
+		dup[i] = v
+	}
+
+	return Mem{banks: dup}, nil
 }
 
 // FindMostCrowded retuns the index of the bank with most blocks.

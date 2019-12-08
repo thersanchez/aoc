@@ -59,6 +59,7 @@ func TestRedistributeBlocksOK(t *testing.T) {
 	t.Parallel()
 
 }
+
 func TestRedistributeBlocksError(t *testing.T) {
 	t.Parallel()
 
