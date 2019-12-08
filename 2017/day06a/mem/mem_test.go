@@ -11,27 +11,27 @@ func TestFindMostCrowded(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		banks [16]int
+		banks []int
 		want  int
 	}{
 		{
-			banks: [16]int{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			banks: []int{1, 0, 0},
 			want:  0,
 		},
 		{
-			banks: [16]int{0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			banks: []int{0, 1, 0},
 			want:  1,
 		},
 		{
-			banks: [16]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6},
-			want:  8,
+			banks: []int{0, 0, 1},
+			want:  2,
 		},
 		{
-			banks: [16]int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-			want:  15,
+			banks: []int{1, 2, 3, 2, 1, 2},
+			want:  2,
 		},
 		{
-			banks: [16]int{0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+			banks: []int{0, 1, 0, 1},
 			want:  1,
 		},
 	}
@@ -59,10 +59,12 @@ func TestRedistributeBlocksOK(t *testing.T) {
 	t.Parallel()
 
 }
+
 func TestRedistributeBlocksError(t *testing.T) {
 	t.Parallel()
 
-	invalidPositions := []int{mem.NumBanks, -1, mem.NumBanks + 10, -27}
+	const numBanks = 3
+	invalidPositions := []int{numBanks, -1, numBanks + 10, -27}
 
 	for _, v := range invalidPositions {
 		desc := fmt.Sprintf("%d", v)
@@ -70,7 +72,7 @@ func TestRedistributeBlocksError(t *testing.T) {
 		t.Run(desc, func(t *testing.T) {
 			t.Parallel()
 
-			banks := [16]int{}
+			banks := make([]int, numBanks)
 			m, err := mem.NewMem(banks)
 			if err != nil {
 				t.Fatalf("cannot create Mem: %v", err)
