@@ -2,13 +2,22 @@ package mem
 
 import "fmt"
 
-// Mem is a memory that contains a number of banks, each bank contains any number of blocks.
+// Mem is a memory that contains a number of banks,
+// each bank contains any number of blocks.
 type Mem struct {
 	banks []int
 }
 
 // NewMem returns a new Mem with a copy of the given banks.
+//
+// Returns an error if any of the banks has a negative number of blocks.
 func NewMem(banks []int) (Mem, error) {
+	for i, b := range banks {
+		if b < 0 {
+			return Mem{}, fmt.Errorf("bank #%d has negative number of blocks", i+1)
+		}
+	}
+
 	dup := make([]int, len(banks))
 	copy(dup, banks)
 
@@ -33,9 +42,11 @@ func (m Mem) FindMostCrowded() int {
 	return iMax
 }
 
-// RedistributeBlocks removes all of the blocks from the given bank, then moves to the next (by index)
-// memory bank and inserts one of the blocks. It continues doing this until it runs out of blocks;
-// if it reaches the last memory bank, it wraps around to the first one.
+// RedistributeBlocks removes all of the blocks from the given bank,
+// and inserts them one by one in the consecutive banks.
+// If it reaches the last memory bank, it wraps around to the first one.
+//
+// Returns an error if the given bank position is out of memory bounds.
 func (m Mem) RedistributeBlocks(pos int) error {
 	if pos < 0 || pos >= len(m.banks) {
 		return fmt.Errorf("invalid pos (%d)", pos)

@@ -7,6 +7,16 @@ import (
 	"github.com/thersanchez/aoc/2017/day06a/mem"
 )
 
+func TestNewMemError(t *testing.T) {
+	invalidBanks := []int{0, 1, 2, 3, -3, 4, 5}
+
+	m, err := mem.NewMem(invalidBanks)
+
+	if err == nil {
+		t.Errorf("unexpected success: %v", m)
+	}
+}
+
 func TestFindMostCrowded(t *testing.T) {
 	t.Parallel()
 
