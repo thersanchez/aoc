@@ -10,8 +10,13 @@ type Mem struct {
 
 // NewMem returns a new Mem with a copy of the given banks.
 //
-// Returns an error if any of the banks has a negative number of blocks.
+// Returns an error if there are no banks or if any of the banks has a
+// negative number of blocks.
 func NewMem(banks []int) (Mem, error) {
+	if len(banks) == 0 {
+		return Mem{}, fmt.Errorf("empty banks")
+	}
+
 	for i, b := range banks {
 		if b < 0 {
 			return Mem{}, fmt.Errorf("bank #%d has negative number of blocks", i+1)

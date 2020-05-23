@@ -8,12 +8,25 @@ import (
 )
 
 func TestNewMemError(t *testing.T) {
-	invalidBanks := []int{0, 1, 2, 3, -3, 4, 5}
+	t.Parallel()
 
-	m, err := mem.NewMem(invalidBanks)
+	invalids := [][]int{
+		[]int{0, 1, 2, 3, -3, 4, 5},
+		[]int{},
+		nil,
+	}
 
-	if err == nil {
-		t.Errorf("unexpected success: %v", m)
+	for _, banks := range invalids {
+		banks := banks
+		desc := fmt.Sprintf("%#v", banks)
+		t.Run(desc, func(t *testing.T) {
+			t.Parallel()
+
+			m, err := mem.NewMem(banks)
+			if err == nil {
+				t.Errorf("unexpected success: %#v", m)
+			}
+		})
 	}
 }
 
