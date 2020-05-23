@@ -56,5 +56,23 @@ func (m Mem) RedistributeBlocks(pos int) error {
 	if pos < 0 || pos >= len(m.banks) {
 		return fmt.Errorf("invalid pos (%d)", pos)
 	}
+
+	blocks := m.banks[pos]
+	m.banks[pos] = 0
+
+	next := func(i int) int {
+		if i == len(m.banks)-1 {
+			return 0
+		}
+
+		return i + 1
+	}
+
+	current := next(pos)
+	for ; blocks > 0; blocks-- {
+		m.banks[current]++
+		current = next(current)
+	}
+
 	return nil
 }
