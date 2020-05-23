@@ -177,3 +177,7 @@ func TestRedistributeBlocksError(t *testing.T) {
 		})
 	}
 }
+
+func TestTODO(t *testing.T) {
+	t.Fatal("add hash method to Mem so you don't have to copy mems in store")
+}
