@@ -178,6 +178,79 @@ func TestRedistributeBlocksError(t *testing.T) {
 	}
 }
 
-func TestTODO(t *testing.T) {
-	t.Fatal("add hash method to Mem so you don't have to copy mems in store")
+func TestHashSame(t *testing.T) {
+	t.Parallel()
+
+	tests := [][]int{
+		{1},
+		{1, 2},
+		{1, 2, 3},
+		{1, 2, 3, 4, 5, 6},
+	}
+
+	for _, banks := range tests {
+		banks := banks
+		name := fmt.Sprintf("%v", banks)
+
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			m1, err := mem.NewMem(banks)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			m2, err := mem.NewMem(banks)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			h1, h2 := m1.Hash(), m2.Hash()
+
+			if h1 != h2 {
+				t.Errorf("different hashes:\n%s\n%s", h1, h2)
+			}
+		})
+	}
+}
+
+func TestHashDifferent(t *testing.T) {
+	t.Parallel()
+
+	type pair struct {
+		a, b []int
+	}
+
+	tests := []pair{
+		{[]int{1}, []int{2}},
+		{[]int{1, 2}, []int{2, 1}},
+		{[]int{1, 2}, []int{1, 2, 3}},
+		{[]int{0}, []int{0, 0}},
+		{[]int{1, 2}, []int{0, 1, 0, 2, 0}},
+	}
+
+	for _, p := range tests {
+		p := p
+		name := fmt.Sprintf("%v, %v", p.a, p.b)
+
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			m1, err := mem.NewMem(p.a)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			m2, err := mem.NewMem(p.b)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			h1, h2 := m1.Hash(), m2.Hash()
+
+			if h1 == h2 {
+				t.Errorf("same hashes: %q", h1)
+			}
+		})
+	}
 }

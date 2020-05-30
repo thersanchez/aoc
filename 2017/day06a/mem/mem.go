@@ -76,3 +76,8 @@ func (m Mem) RedistributeBlocks(pos int) error {
 
 	return nil
 }
+
+// Hash returns a hash of the Mem.
+func (m Mem) Hash() string {
+	return fmt.Sprintf("%#v", m)
+}
