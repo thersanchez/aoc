@@ -1,14 +1,16 @@
 package mem
 
-// States stores copies of the states of a memory.
-type States []Mem
+// States is a collection of memory hashes.
+type States struct {
+	data map[string]struct{}
+}
 
-// StoreCopy stores a copy of the memory.
-func (s States) StoreCopy(m Mem) {
+// Add adds the memory hash h to s.
+func (s *States) Add(h string) {
 
 }
 
 // Find returns if the state of m is already stored in s.
-func (s States) Find(m Mem) bool {
+func (s *States) Has(m Mem) bool {
 	return false
 }
