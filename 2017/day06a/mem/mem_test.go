@@ -7,7 +7,7 @@ import (
 	"github.com/thersanchez/aoc/2017/day06a/mem"
 )
 
-func TestNewMemError(t *testing.T) {
+func TestMem_NewMemError(t *testing.T) {
 	t.Parallel()
 
 	invalids := [][]int{
@@ -30,7 +30,7 @@ func TestNewMemError(t *testing.T) {
 	}
 }
 
-func TestFindMostCrowded(t *testing.T) {
+func TestMem_FindMostCrowded(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -78,7 +78,7 @@ func TestFindMostCrowded(t *testing.T) {
 	}
 }
 
-func TestRedistributeBlocksOK(t *testing.T) {
+func TestMem_RedistributeBlocksOK(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -152,7 +152,7 @@ func TestRedistributeBlocksOK(t *testing.T) {
 	}
 }
 
-func TestRedistributeBlocksError(t *testing.T) {
+func TestMem_RedistributeBlocksError(t *testing.T) {
 	t.Parallel()
 
 	const numBanks = 3
@@ -178,7 +178,7 @@ func TestRedistributeBlocksError(t *testing.T) {
 	}
 }
 
-func TestHashSame(t *testing.T) {
+func TestMem_HashSame(t *testing.T) {
 	t.Parallel()
 
 	tests := [][]int{
@@ -214,7 +214,7 @@ func TestHashSame(t *testing.T) {
 	}
 }
 
-func TestHashDifferent(t *testing.T) {
+func TestMem_HashDifferent(t *testing.T) {
 	t.Parallel()
 
 	type pair struct {
