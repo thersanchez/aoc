@@ -1,15 +1,16 @@
-package mem_test
+package states_test
 
 import (
 	"testing"
 
-	"github.com/thersanchez/aoc/2017/day06b/mem"
+	"github.com/thersanchez/aoc/2017/day06a/mem"
+	"github.com/thersanchez/aoc/2017/day06b/states"
 )
 
 func TestStates_HasWhenEmpty(t *testing.T) {
 	t.Parallel()
 
-	states := mem.NewStates()
+	states := states.NewStates()
 
 	var m mem.Mem
 	{
@@ -31,7 +32,7 @@ func TestStates_HasWhenEmpty(t *testing.T) {
 func TestStates_HasWhenMissing(t *testing.T) {
 	t.Parallel()
 
-	states := mem.NewStates()
+	states := states.NewStates()
 
 	// m1 and m2 have different hashes
 	var m1, m2 mem.Mem
@@ -65,7 +66,7 @@ func TestStates_HasWhenMissing(t *testing.T) {
 func TestStates_HasOK(t *testing.T) {
 	t.Parallel()
 
-	states := mem.NewStates()
+	states := states.NewStates()
 
 	var m mem.Mem
 	{

@@ -8,7 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/thersanchez/aoc/2017/day06b/mem"
+	"github.com/thersanchez/aoc/2017/day06a/mem"
+	"github.com/thersanchez/aoc/2017/day06b/states"
 )
 
 func main() {
@@ -50,12 +51,12 @@ func do(r io.Reader) (int, error) {
 		return 0, fmt.Errorf("creating memory: %v", err)
 	}
 
-	states := mem.NewStates()
+	states := states.NewStates()
 
 	for {
 		states.Add(m, howMany)
-		mc := m.FindMostCrowded()
 
+		mc := m.FindMostCrowded()
 		if err := m.RedistributeBlocks(mc); err != nil {
 			return 0, fmt.Errorf("redistributing blocks: %v", err)
 		}
@@ -66,7 +67,6 @@ func do(r io.Reader) (int, error) {
 		if ok {
 			return howMany - step, nil
 		}
-
 	}
 }
 

@@ -1,4 +1,6 @@
-package mem
+package states
+
+import "github.com/thersanchez/aoc/2017/day06a/mem"
 
 // States is a collection of memory hashes and steps requiered to get to that memory state.
 type States struct {
@@ -13,13 +15,13 @@ func NewStates() *States {
 }
 
 // Add adds the memory hash of m to s.
-func (s *States) Add(m Mem, step int) {
+func (s *States) Add(m mem.Mem, step int) {
 	s.data[m.Hash()] = step
 }
 
 // Has returns the step associated with a given memory
 // or false if not found.
-func (s *States) Has(m Mem) (int, bool) {
+func (s *States) Has(m mem.Mem) (int, bool) {
 	step, ok := s.data[m.Hash()]
 	return step, ok
 }
