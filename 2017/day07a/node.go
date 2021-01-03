@@ -4,20 +4,12 @@ package main
 type Node struct {
 	ID       string
 	Weight   int
-	Children NodeSet
+	Parent   *Node
+	children map[string]*Node
 }
 
-// NodeSet is a collection of unique Node IDs.
-type NodeSet struct {
-	m map[string]struct{}
-}
-
-// Add adds a new unique ID to the set. Returns an error if the ID already exists in the set.
-func (*NodeSet) Add(id string) error {
-	return nil
-}
-
-// Has returns true if the ID is in the set, or false if it is not.
-func (*NodeSet) Has(id string) bool {
-	return false
+// AddChildren adds or update a child of n.
+func (n *Node) AddChildren(child *Node) {
+	n.children[child.ID] = child
+	child.Parent = n
 }
