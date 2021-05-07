@@ -18,9 +18,6 @@ func TestParseLineError(t *testing.T) {
 			name: "only name",
 			line: "llyhqfe",
 		}, {
-			name: "only name",
-			line: "llyhqfe",
-		}, {
 			name: "only name with space",
 			line: "llyhqfe ",
 		}, {
@@ -29,6 +26,24 @@ func TestParseLineError(t *testing.T) {
 		}, {
 			name: "only weight, with space",
 			line: " (21)",
+		}, {
+			name: "weight has no brackets",
+			line: "a 42",
+		}, {
+			name: "weight has no open bracket",
+			line: "a 42)",
+		}, {
+			name: "weight has no close bracket",
+			line: "a (42",
+		}, {
+			name: "weight is not a number",
+			line: "a (b)",
+		}, {
+			name: "weight is a float",
+			line: "a (3.5)",
+		}, {
+			name: "weight is negative",
+			line: "a (-42)",
 		}, {
 			name: "only weight, with spaces",
 			line: " (21) ",
