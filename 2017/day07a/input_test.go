@@ -5,7 +5,63 @@ import (
 	"testing"
 )
 
-func TestParseNodeOK(t *testing.T) {
+func TestParseLineError(t *testing.T) {
+	t.Parallel()
+	subtests := []struct {
+		name string
+		line string
+	}{
+		{
+			name: "empty",
+			line: "",
+		}, {
+			name: "only name",
+			line: "llyhqfe",
+		}, {
+			name: "only name",
+			line: "llyhqfe",
+		}, {
+			name: "only name with space",
+			line: "llyhqfe ",
+		}, {
+			name: "only weight",
+			line: "(21)",
+		}, {
+			name: "only weight, with space",
+			line: " (21)",
+		}, {
+			name: "only weight, with spaces",
+			line: " (21) ",
+		}, {
+			name: "garbage after weight",
+			line: "a (0) b",
+		}, {
+			name: "arrow but no children",
+			line: "a (0) -> ",
+		}, {
+			name: "comma at the end",
+			line: "a (0) -> b,",
+		}, {
+			name: "comma at the end, with space",
+			line: "a (0) -> b, ",
+		},
+	}
+
+	for _, test := range subtests {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+
+			_, _, _, err := parseLine(test.line)
+			if err == nil {
+				t.Errorf("unexpected success")
+			}
+
+		})
+	}
+}
+
+func TestParseLineOK(t *testing.T) {
 	t.Parallel()
 
 	type want struct {
@@ -21,10 +77,19 @@ func TestParseNodeOK(t *testing.T) {
 	}{
 		{
 			name: "no children",
-			line: "a (42)",
+			line: "llyhqfe (21)",
 			want: want{
-				name:   "a",
-				weight: 42,
+				name:   "llyhqfe",
+				weight: 21,
+			},
+		},
+		{
+			name: "with children",
+			line: "vpbdpfm (74) -> ndegtj, wnwxs",
+			want: want{
+				name:     "vpbdpfm",
+				weight:   74,
+				children: []string{"ndegtj", "wnwxs"},
 			},
 		},
 	}
@@ -34,7 +99,7 @@ func TestParseNodeOK(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			name, weight, children, err := parseNode(test.line)
+			name, weight, children, err := parseLine(test.line)
 			if err != nil {
 				t.Fatalf("error parsing line: %v", err)
 			}
