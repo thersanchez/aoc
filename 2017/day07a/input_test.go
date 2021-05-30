@@ -67,7 +67,7 @@ func TestParseLineError(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			_, _, _, err := parseLine(test.line)
+			_, _, _, err := ParseLine(test.line)
 			if err == nil {
 				t.Errorf("unexpected success")
 			}
@@ -114,7 +114,7 @@ func TestParseLineOK(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			name, weight, children, err := parseLine(test.line)
+			name, weight, children, err := ParseLine(test.line)
 			if err != nil {
 				t.Fatalf("error parsing line: %v", err)
 			}
