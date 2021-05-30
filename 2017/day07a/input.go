@@ -33,7 +33,16 @@ func ParseLine(line string) (
 		return "", 0, nil, fmt.Errorf("invalid line")
 	}
 
-	return name, weight, nil, nil
+	if len(chunks) == 2 {
+		return name, weight, nil, nil
+	}
+
+	children, err = parseChildren(chunks[2])
+	if err != nil {
+		return "", 0, nil, fmt.Errorf("invalid line")
+	}
+
+	return name, weight, children, nil
 }
 
 // parseWeight returns the weight in s. It panics if s is the empty string.
@@ -57,4 +66,21 @@ func parseWeight(s string) (int, error) {
 		return 0, fmt.Errorf("weight must be >0, was %d", n)
 	}
 	return n, nil
+}
+
+func parseChildren(s string) ([]string, error) {
+	if !strings.HasPrefix(s, "-> ") {
+		return nil, fmt.Errorf("invalid line")
+	}
+
+	tail := strings.TrimPrefix(s, "-> ")
+	children := strings.Split(tail, ", ")
+
+	for _, c := range children {
+		if c == "" {
+			return nil, fmt.Errorf("invalid line")
+		}
+	}
+
+	return children, nil
 }

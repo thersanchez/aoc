@@ -49,16 +49,13 @@ func TestParseLineError(t *testing.T) {
 			line: " (21) ",
 		}, {
 			name: "garbage after weight",
-			line: "a (0) b",
+			line: "a (42) b",
 		}, {
 			name: "arrow but no children",
-			line: "a (0) -> ",
-		}, {
-			name: "comma at the end",
-			line: "a (0) -> b,",
+			line: "a (42) -> ",
 		}, {
 			name: "comma at the end, with space",
-			line: "a (0) -> b, ",
+			line: "a (42) -> b, ",
 		},
 	}
 
@@ -67,11 +64,11 @@ func TestParseLineError(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			_, _, _, err := ParseLine(test.line)
+			name, weight, children, err := ParseLine(test.line)
 			if err == nil {
-				t.Errorf("unexpected success")
+				t.Errorf("unexpected success, got %s, %d, %q",
+					name, weight, children)
 			}
-
 		})
 	}
 }
