@@ -1,4 +1,4 @@
-package main
+package day07a
 
 import (
 	"sort"

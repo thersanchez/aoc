@@ -1,4 +1,4 @@
-package main
+package day07a
 
 import (
 	"testing"
@@ -51,7 +51,7 @@ func TestSetSubtract(t *testing.T) {
 		test := test
 		t.Run(test.desc, func(t *testing.T) {
 			t.Parallel()
-			got := setSubtract(test.minuend, test.subtraend)
+			got := SetSubtract(test.minuend, test.subtraend)
 			assert.Equal(t, test.want, got)
 		})
 	}

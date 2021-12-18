@@ -1,6 +1,6 @@
-package main
+package day07a
 
-func setSubtract(minuend, subtraend map[string]struct{}) map[string]struct{} {
+func SetSubtract(minuend, subtraend map[string]struct{}) map[string]struct{} {
 	difference := map[string]struct{}{}
 
 	for key, _ := range minuend {

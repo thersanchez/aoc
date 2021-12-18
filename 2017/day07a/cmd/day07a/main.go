@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/thersanchez/aoc/2017/day07a"
 )
 
 func main() {
@@ -18,7 +20,7 @@ func main() {
 
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
-		name, _, children, err := ParseLine(scanner.Text())
+		name, _, children, err := day07a.ParseLine(scanner.Text())
 		if err != nil {
 			log.Fatalf("error parsing line: %v", err)
 		}
@@ -34,7 +36,7 @@ func main() {
 		log.Fatalf("failure scanning input file: %v", err)
 	}
 
-	roots := setSubtract(nodeSet, childrenSet)
+	roots := day07a.SetSubtract(nodeSet, childrenSet)
 
 	if len(roots) == 0 {
 		log.Fatalf("malformed tree: didn't found any root")

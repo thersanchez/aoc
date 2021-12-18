@@ -1,4 +1,4 @@
-package main
+package day07a
 
 // Node represents a program.
 type Node struct {
