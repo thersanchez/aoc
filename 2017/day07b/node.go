@@ -5,8 +5,10 @@ import (
 )
 
 type Node struct {
-	id       string
-	weight   int
+	id     string
+	weight int
+
+	// as part of a tree, the node also has these other fields
 	parent   *Node
 	children map[string]*Node
 	// totalWeight is the weight of the node plus the total weight of its children.
@@ -37,6 +39,7 @@ func (n *Node) Id() string {
 }
 
 // AddChildren adds or update a child of n.
+// When you add a child, you invalidate the total weight of its ancestors.
 func (n *Node) AddChildren(child *Node) {
 	n.children[child.id] = child
 	child.parent = n
@@ -61,4 +64,5 @@ func (n *Node) TotalWeight() int {
 		n.totalWeight += c.TotalWeight()
 	}
 	return n.totalWeight
+
 }

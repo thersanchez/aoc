@@ -97,7 +97,7 @@ func TestTotalWeight_BigTree(t *testing.T) {
 		return node
 	}
 
-	n1 := createNode(1)
+	root := createNode(1)
 	n2 := createNode(2)
 	n3 := createNode(3)
 	n4 := createNode(4)
@@ -109,10 +109,10 @@ func TestTotalWeight_BigTree(t *testing.T) {
 	n2.AddChildren(n4)
 	n2.AddChildren(n5)
 	n2.AddChildren(n6)
-	n1.AddChildren(n2)
-	n1.AddChildren(n3)
+	root.AddChildren(n2)
+	root.AddChildren(n3)
 
-	got := n1.TotalWeight()
+	got := root.TotalWeight()
 	want := 28
 	if got != want {
 		t.Errorf("wrong weight, want %d, got %d", want, got)
