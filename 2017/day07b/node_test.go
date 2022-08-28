@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/thersanchez/aoc/2017/day07b"
 )
 
@@ -50,6 +51,8 @@ func TestEmptyId(t *testing.T) {
 }
 
 func TestTotalWeight_OneNode(t *testing.T) {
+	t.Parallel()
+
 	want := 42
 	n, err := day07b.NewNode("some_id", want)
 	if err != nil {
@@ -64,6 +67,8 @@ func TestTotalWeight_OneNode(t *testing.T) {
 }
 
 func TestTotalWeight_OneParentOneChildren(t *testing.T) {
+	t.Parallel()
+
 	pWeight := 42
 	cWeight := 13
 	want := pWeight + cWeight
@@ -88,6 +93,8 @@ func TestTotalWeight_OneParentOneChildren(t *testing.T) {
 }
 
 func TestTotalWeight_BigTree(t *testing.T) {
+	t.Parallel()
+
 	createNode := func(w int) *day07b.Node {
 		id := strconv.Itoa(w)
 		node, err := day07b.NewNode(id, w)
@@ -117,4 +124,73 @@ func TestTotalWeight_BigTree(t *testing.T) {
 	if got != want {
 		t.Errorf("wrong weight, want %d, got %d", want, got)
 	}
+}
+
+func TestChildren_NoChildren(t *testing.T) {
+	t.Parallel()
+
+	p, err := day07b.NewNode("parent", 42)
+	if err != nil {
+		t.Fatalf("failed to create parent node: %v", err)
+	}
+
+	children := p.Children()
+	if len(children) != 0 {
+		t.Errorf("got %d children, want 0", len(children))
+	}
+}
+
+func TestChildren_OneChildren(t *testing.T) {
+	t.Parallel()
+
+	p, err := day07b.NewNode("parent", 42)
+	if err != nil {
+		t.Fatalf("failed to create parent node: %v", err)
+	}
+
+	c, err := day07b.NewNode("child", 24)
+	if err != nil {
+		t.Fatalf("failed to create child node: %v", err)
+	}
+
+	p.AddChildren(c)
+
+	children := p.Children()
+	if len(children) != 1 {
+		t.Errorf("got %d children, want 1", len(children))
+	}
+
+	if children[0] != c {
+		t.Errorf("bad child, got %v, want %v", *children[0], *c)
+	}
+}
+
+func TestChildren_TwoChildren(t *testing.T) {
+	t.Parallel()
+
+	p, err := day07b.NewNode("parent", 42)
+	if err != nil {
+		t.Fatalf("failed to create parent node: %v", err)
+	}
+
+	c1, err := day07b.NewNode("child1", 24)
+	if err != nil {
+		t.Fatalf("failed to create child node: %v", err)
+	}
+
+	c2, err := day07b.NewNode("child2", 20)
+	if err != nil {
+		t.Fatalf("failed to create child node: %v", err)
+	}
+
+	p.AddChildren(c1)
+	p.AddChildren(c2)
+
+	children := p.Children()
+	if len(children) != 2 {
+		t.Errorf("got %d children, want 1", len(children))
+	}
+
+	want := []*day07b.Node{c1, c2}
+	assert.ElementsMatch(t, children, want)
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 
@@ -101,4 +102,21 @@ func main() {
 	}
 
 	root.TotalWeight()
+
+	//TODO: modify this block to calculate what would be the weight
+	// needed to balance the entire tower.
+
+	// print all node names and total weights of its children
+	{
+		for k, v := range nodeSet {
+			children := v.Children()
+
+			childrenWeights := []int{}
+			for _, c := range children {
+				childrenWeights = append(childrenWeights, c.TotalWeight())
+			}
+
+			fmt.Println(k, childrenWeights)
+		}
+	}
 }

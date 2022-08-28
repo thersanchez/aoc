@@ -64,5 +64,15 @@ func (n *Node) TotalWeight() int {
 		n.totalWeight += c.TotalWeight()
 	}
 	return n.totalWeight
+}
 
+// Children returns the children of n.
+func (n *Node) Children() []*Node {
+	c := []*Node{}
+
+	for _, v := range n.children {
+		c = append(c, v)
+	}
+
+	return c
 }
