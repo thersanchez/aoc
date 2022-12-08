@@ -103,20 +103,54 @@ func main() {
 
 	root.TotalWeight()
 
-	//TODO: modify this block to calculate what would be the weight
-	// needed to balance the entire tower.
-
-	// print all node names and total weights of its children
+	// Note that if a node is unbalanced by a certain amount, all
+	// its ancestors will also be unbalanced by the same amount.
+	//
+	// So, in order to find the program with the wrong weight,
+	// we can find all unbalanced nodes and then the one with
+	// the lowest weight.
+	var lighter *day07b.Node
 	{
-		for k, v := range nodeSet {
-			children := v.Children()
+		unbalanced := []*day07b.Node{}
+		for _, node := range nodeSet {
+			if !node.IsBalanced() {
+				unbalanced = append(unbalanced, node)
+			}
+		}
 
-			childrenWeights := []int{}
-			for _, c := range children {
-				childrenWeights = append(childrenWeights, c.TotalWeight())
+		if len(unbalanced) == 0 {
+			log.Fatal("no unbalanced nodes")
+		}
+
+		lighter = unbalanced[0]
+		for _, n := range unbalanced[1:] {
+			if lighter.TotalWeight() > n.TotalWeight() {
+				lighter = n
+			}
+		}
+	}
+
+	// what would its weight need to be to balance the entire tower?
+	// answer: the new weight of the unbalanced child is the result
+	// of substracting to its current weight the unbalance seen by its
+	// parent.
+	//
+	// TODO: finish this
+	{
+		children := lighter.Children()
+		childrenWeights := []int{}
+		for _, c := range children {
+			childrenWeights = append(childrenWeights, c.TotalWeight())
+		}
+		fmt.Println(childrenWeights)
+
+		seen := map[int]struct{}{}
+		for _, w := range childrenWeights {
+			if _, ok := seen[w]; ok {
+				fmt.Println(w)
 			}
 
-			fmt.Println(k, childrenWeights)
+			seen[w] = struct{}{}
 		}
 	}
 }

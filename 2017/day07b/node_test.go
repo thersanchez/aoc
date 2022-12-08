@@ -194,3 +194,70 @@ func TestChildren_TwoChildren(t *testing.T) {
 	want := []*day07b.Node{c1, c2}
 	assert.ElementsMatch(t, children, want)
 }
+
+func TestIsBalanced_Leaf(t *testing.T) {
+	t.Parallel()
+
+	leaf, err := day07b.NewNode("leaf", 42)
+	if err != nil {
+		t.Fatalf("creating leaf: %v", err)
+	}
+
+	if !leaf.IsBalanced() {
+		t.Error("leafs should be balanced")
+	}
+}
+
+func TestIsBalanced_BalancedChildren(t *testing.T) {
+	t.Parallel()
+
+	parent, err := day07b.NewNode("parent", 10)
+	if err != nil {
+		t.Fatalf("creating parent: %v", err)
+	}
+
+	child1, err := day07b.NewNode("child1", 20)
+	if err != nil {
+		t.Fatalf("creating child 1: %v", err)
+	}
+
+	child2, err := day07b.NewNode("child2", 20)
+	if err != nil {
+		t.Fatalf("creating child 2: %v", err)
+	}
+
+	parent.AddChildren(child1)
+	parent.AddChildren(child2)
+	parent.TotalWeight()
+
+	if !parent.IsBalanced() {
+		t.Error("parent should be balanced")
+	}
+}
+
+func TestIsBalanced_UnbalancedChildren(t *testing.T) {
+	t.Parallel()
+
+	parent, err := day07b.NewNode("parent", 10)
+	if err != nil {
+		t.Fatalf("creating parent: %v", err)
+	}
+
+	child1, err := day07b.NewNode("child1", 20)
+	if err != nil {
+		t.Fatalf("creating child 1: %v", err)
+	}
+
+	child2, err := day07b.NewNode("child2", 21)
+	if err != nil {
+		t.Fatalf("creating child 2: %v", err)
+	}
+
+	parent.AddChildren(child1)
+	parent.AddChildren(child2)
+	parent.TotalWeight()
+
+	if parent.IsBalanced() {
+		t.Error("parent should be unbalanced")
+	}
+}

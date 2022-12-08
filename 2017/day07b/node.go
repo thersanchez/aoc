@@ -76,3 +76,24 @@ func (n *Node) Children() []*Node {
 
 	return c
 }
+
+// IsBalanced returns if the children have the same weight.
+func (n *Node) IsBalanced() bool {
+	children := n.Children()
+	if len(children) == 0 {
+		return true
+	}
+
+	childrenWeights := []int{}
+	for _, c := range children {
+		childrenWeights = append(childrenWeights, c.TotalWeight())
+	}
+
+	for _, n := range childrenWeights {
+		if n != childrenWeights[0] {
+			return false
+		}
+	}
+
+	return true
+}
