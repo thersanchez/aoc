@@ -38,6 +38,11 @@ func (n *Node) Id() string {
 	return n.id
 }
 
+// Weight returns the weight of the node.
+func (n *Node) Weight() int {
+	return n.weight
+}
+
 // AddChildren adds or update a child of n.
 // When you add a child, you invalidate the total weight of its ancestors.
 func (n *Node) AddChildren(child *Node) {

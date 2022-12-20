@@ -154,3 +154,10 @@ func main() {
 		}
 	}
 }
+
+// Returns the weight that incorrectNode should have for its parent to be
+// balanced.
+func correctedWeight(correctNode, incorrectNode *day07b.Node) int {
+	unbalanceAmount := correctNode.TotalWeight() - incorrectNode.TotalWeight()
+	return incorrectNode.Weight() + unbalanceAmount
+}

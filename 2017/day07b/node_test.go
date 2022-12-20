@@ -23,6 +23,20 @@ func TestNodeId(t *testing.T) {
 	}
 }
 
+func TestNodeWeight(t *testing.T) {
+	t.Parallel()
+
+	want := 42
+	n, err := day07b.NewNode("test_id", want)
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	got := n.Weight()
+	if want != got {
+		t.Errorf("wrong weight, want %d, got %d", want, got)
+	}
+}
 func TestNonPositiveWeightAreRejected(t *testing.T) {
 	t.Parallel()
 
