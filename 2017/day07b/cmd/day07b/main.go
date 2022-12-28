@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -130,29 +131,78 @@ func main() {
 		}
 	}
 
-	// what would its weight need to be to balance the entire tower?
-	// answer: the new weight of the unbalanced child is the result
-	// of substracting to its current weight the unbalance seen by its
-	// parent.
+	correct, incorrect, err := childrenRepresentatives(lighter)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	result := correctedWeight(correct, incorrect)
+
+	fmt.Println(result)
+}
+
+// Analises an unbalanced parent node to find out the children with the
+// incorrect weight. It returns the incorrect child and one of the correct ones.
+func childrenRepresentatives(parent *day07b.Node) (
+	correct, incorrect *day07b.Node, err error,
+) {
+	children := parent.Children()
+
+	// weightCounter will keep track of how many times each TotalWeight
+	// happens for each children. We don't count the total amount of times
+	// the correct weight shows up, just until we have seen enough weights
+	// to have the correct and incorrect ones.
 	//
-	// TODO: finish this
-	{
-		children := lighter.Children()
-		childrenWeights := []int{}
-		for _, c := range children {
-			childrenWeights = append(childrenWeights, c.TotalWeight())
+	// For example, given children with the following weights:
+	//
+	//     [45, 45, 45, 45, 68, 45, 45, 45]
+	//
+	// the weightCounter map will have:
+	//
+	//     {45: 4, 68: 1}
+	//
+	// we will skip counting the last 3 elements.
+	weightCounter := map[int]int{
+		children[0].TotalWeight(): 1,
+	}
+	for i, c := range children[1:] {
+		if _, ok := weightCounter[c.TotalWeight()]; ok {
+			weightCounter[c.TotalWeight()] += 1
+		} else {
+			weightCounter[c.TotalWeight()] = 1
 		}
-		fmt.Println(childrenWeights)
-
-		seen := map[int]struct{}{}
-		for _, w := range childrenWeights {
-			if _, ok := seen[w]; ok {
-				fmt.Println(w)
-			}
-
-			seen[w] = struct{}{}
+		if i > 2 && len(weightCounter) > 1 {
+			break
 		}
 	}
+
+	// given a weightCounter like the one in the example above:
+	//
+	//     {45: 4, 68: 1}
+	//
+	// we want to find the incorrect node (the one with weight 68),
+	// and any other node will be the correct one.
+	var incorrectValue int
+	for k, v := range weightCounter {
+		if v == 1 {
+			incorrectValue = k
+		}
+	}
+
+	var incorrectNode, correctNode *day07b.Node
+	for _, n := range children {
+		if n.TotalWeight() == incorrectValue {
+			incorrectNode = n
+		} else {
+			correctNode = n
+		}
+
+		if incorrectNode != nil && correctNode != nil {
+			return correctNode, incorrectNode, nil
+		}
+	}
+
+	return nil, nil, errors.New("balanced parent")
 }
 
 // Returns the weight that incorrectNode should have for its parent to be
